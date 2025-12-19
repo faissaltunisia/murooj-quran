@@ -150,7 +150,7 @@
         function renderUI() {
             const pc = document.getElementById('pc-grades'), mb = document.getElementById('mobile-grades');
             pc.innerHTML = ''; mb.innerHTML = '';
-            ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف  الثاني عشر"].forEach(g => {
+            ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"].forEach(g => {
                 if(db[g]) {
                     const html = `<div class="grade-item ${g===currentG?'active':''}" onclick="updateGrade('${g}')">${g}</div>`;
                     pc.insertAdjacentHTML('beforeend', html);
