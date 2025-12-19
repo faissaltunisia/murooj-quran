@@ -1,13 +1,8 @@
-const CACHE_NAME = 'murooj-v2';
-const assets = [
-  './',
-  './index.html',
-  './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;800&display=swap'
-];
+const cacheName = 'murooj-v3';
+const assets = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(assets)));
+  e.waitUntil(caches.open(cacheName).then(c => c.addAll(assets)));
 });
 
 self.addEventListener('fetch', e => {
