@@ -32,35 +32,24 @@
 
         /* الهيدر */
         .app-header { width: 100%; z-index: 2000; flex-shrink: 0; }
-        .gov-bar { background: #000; color: #fff; text-align: center; padding: 6px; font-size: 10px; border-bottom: 1px solid var(--accent-gold); }
+        .gov-bar { background: #000; color: #fff; text-align: center; padding: 6px; font-size: 10px; border-bottom: 1px solid var(--accent-gold); font-weight: bold; }
         .main-nav { background: var(--header-gradient); padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent-gold); }
         .brand img { width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid var(--accent-gold); background: #fff; }
         .app-title { font-family: 'Amiri', serif; color: var(--accent-gold); font-size: 1.3rem; }
 
-        /* منطقة المحتوى الرئيسية */
         .main-layout { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* القائمة الجانبية (حاسوب) */
-        .desktop-sidebar {
-            width: var(--sidebar-width); background: #062b1b; border-left: 2px solid var(--accent-gold);
-            padding: 20px 10px; overflow-y: auto;
-        }
+        /* القوائم */
+        .desktop-sidebar { width: var(--sidebar-width); background: #062b1b; border-left: 2px solid var(--accent-gold); padding: 20px 10px; overflow-y: auto; }
+        .mobile-tabs { display: none; background: #062b1b; padding: 10px; gap: 10px; overflow-x: auto; border-bottom: 2px solid var(--accent-gold); }
 
-        /* شريط التبويبات (هاتف) */
-        .mobile-tabs {
-            display: none; background: #062b1b; padding: 10px; gap: 10px;
-            overflow-x: auto; border-bottom: 2px solid var(--accent-gold);
-        }
-
-        /* منطقة العرض */
+        /* المحتوى */
         .content-area { flex: 1; overflow-y: auto; background: var(--app-body-bg); padding: 20px; padding-bottom: 100px; }
 
-        /* اللودر */
         #loader { position: absolute; inset: 0; background: var(--app-body-bg); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* العناصر */
         .grade-item { padding: 12px; margin-bottom: 8px; background: rgba(255,255,255,0.05); color: #fff; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.3s; border: 1px solid transparent; }
         .grade-item.active { background: var(--accent-gold); color: #000; font-weight: bold; border-color: #fff; }
 
@@ -71,12 +60,13 @@
         .sem-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: transparent; }
         .sem-btn.active { background: var(--primary-bg); color: var(--accent-gold); }
 
-        /* المودال والمشغل */
+        /* النوافذ */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-card { background: #fff; width: 100%; max-width: 500px; border-radius: 15px; padding: 25px; border-top: 10px solid var(--accent-gold); }
+        .modal-card { background: #fff; width: 100%; max-width: 500px; border-radius: 15px; padding: 25px; border-top: 10px solid var(--accent-gold); text-align: center; }
         .video-box { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 3px solid var(--accent-gold); }
 
-        .floating-info { position: fixed; bottom: 70px; left: 20px; width: 50px; height: 50px; background: var(--accent-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 4000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        /* زر تعريف المنصة الجديد */
+        .floating-info { position: fixed; bottom: 70px; left: 20px; padding: 0 15px; height: 45px; background: var(--accent-gold); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; cursor: pointer; z-index: 4000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: #000; }
 
         .app-footer { background: #000; color: var(--accent-gold); text-align: center; padding: 15px; font-size: 11px; border-top: 2px solid var(--accent-gold); }
 
@@ -89,12 +79,15 @@
 </head>
 <body>
 
-    <div id="loader"><div class="spinner"></div><p>جاري تحميل المنصة...</p></div>
+    <div id="loader"><div class="spinner"></div><p>جاري تحميل منصة مدرسة المروج...</p></div>
 
     <div class="app-header">
-        <div class="gov-bar">سلطنة عمان - وزارة التربية والتعليم</div>
+        <div class="gov-bar">سلطنة عمان - وزارة التربية والتعليم - محافظة ظفار</div>
         <header class="main-nav">
-            <div class="brand"><img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png"></div>
+            <div class="brand" style="display:flex; align-items:center; gap:10px;">
+                <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png">
+                <div style="color: #fff; font-size: 9px; line-height: 1.2;">مدرسة المروج<br><span style="color:var(--accent-gold)">للتعليم الأساسي</span></div>
+            </div>
             <div class="app-title">مُصحَف المُرُوج الرَّقمِي</div>
             <div style="width:45px"></div>
         </header>
@@ -112,20 +105,25 @@
         </section>
     </main>
 
-    <div class="floating-info" onclick="toggleModal('info-modal', true)">؟</div>
+    <div class="floating-info" onclick="toggleModal('info-modal', true)">تعريف بالمنصة ؟</div>
 
-    <footer class="app-footer">جميع الحقوق محفوظة لمدرسة المروج © 2025</footer>
+    <footer class="app-footer">
+        جميع الحقوق محفوظة لمدرسة المروج © 2025م <br> 
+        تطوير وبرمجة: أ. فيصل العريبي
+    </footer>
 
     <div class="overlay" id="info-modal">
         <div class="modal-card">
-            <h2 style="color: var(--primary-bg); font-family: 'Amiri';">۞ عن المنصة</h2>
-            <p style="margin: 15px 0; line-height: 1.7;">مبادرة تعليمية لطلاب مدرسة المروج تهدف لتسهيل حفظ السور المقررة.</p>
-            <button onclick="toggleModal('info-modal', false)" style="width:100%; padding:10px; background:var(--primary-bg); color:var(--accent-gold); border:none; border-radius:5px; cursor:pointer;">إغلاق</button>
+            <h2 style="color: var(--primary-bg); font-family: 'Amiri'; margin-bottom: 10px;">۞ تعريف المنصة</h2>
+            <p style="margin: 15px 0; line-height: 1.7; text-align: justify; font-size: 14px;">
+                مرحباً بكم في <b>مُصحَف المُرُوج الرَّقمِي</b>، منصة تعليمية رائدة مخصصة لطلاب مدرسة المروج بمحافظة ظفار. تهدف المنصة إلى تيسير حفظ وتلاوة السور المقررة في مادة التربية الإسلامية من خلال توفير تلاوات تعليمية مرئية بجودة عالية، مرتبة حسب الصفوف والفصول الدراسية، لتمكين الطالب من الإتقان والتعلم الذاتي بكل سهولة.
+            </p>
+            <button onclick="toggleModal('info-modal', false)" style="width:100%; padding:12px; background:var(--primary-bg); color:var(--accent-gold); border:none; border-radius:8px; cursor:pointer; font-weight:bold;">العودة للمنصة</button>
         </div>
     </div>
 
     <div class="overlay" id="video-overlay" style="flex-direction: column;">
-        <button onclick="closeVideo()" style="margin-bottom:10px; padding:8px 20px; background:var(--accent-gold); border:none; border-radius:20px; font-weight:bold; cursor:pointer;">إغلاق المشغل ✕</button>
+        <button onclick="closeVideo()" style="margin-bottom:10px; padding:10px 25px; background:var(--accent-gold); border:none; border-radius:25px; font-weight:bold; cursor:pointer;">إغلاق المشغل ✕</button>
         <div class="video-box" id="video-container"></div>
     </div>
 
@@ -146,7 +144,7 @@
                 });
                 renderUI();
                 document.getElementById('loader').style.display = 'none';
-            } catch (e) { alert("خطأ في جلب البيانات"); }
+            } catch (e) { console.error(e); }
         }
 
         function renderUI() {
@@ -173,8 +171,12 @@
         function renderGrid() {
             const grid = document.getElementById('grid'); grid.innerHTML = '';
             const items = (db[currentG] && db[currentG][currentS]) || [];
+            if(items.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px; color:#888;">لا توجد سور مضافة حالياً لهذا الفصل.</p>';
+                return;
+            }
             items.forEach(i => {
-                grid.innerHTML += `<div class="surah-card" onclick="playVideo('${i.v}')"><h3>${i.t}</h3><p style="color:var(--accent-gold); font-size:12px; margin-top:5px;">تلاوة تعليمية</p></div>`;
+                grid.innerHTML += `<div class="surah-card" onclick="playVideo('${i.v}')"><h3>${i.t}</h3><p style="color:var(--accent-gold); font-size:12px; margin-top:5px;">۞ تلاوة تعليمية ۞</p></div>`;
             });
         }
 
@@ -188,10 +190,9 @@
 
         init();
 
-        // تسجيل الـ Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW Registered'));
+                navigator.serviceWorker.register('./sw.js').then(() => console.log('SW Active'));
             });
         }
     </script>
