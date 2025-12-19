@@ -1,7 +1,6 @@
 {
   "name": "مُصحَف المُرُوج الرَّقمِي",
-  "short_name": "مصحف المروج",
-  "description": "منصة مدرسة المروج الرقمية لتلاوة وحفظ القرآن الكريم",
+  "short_name": "المصحف",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#041a11",
