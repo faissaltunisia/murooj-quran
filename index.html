@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>منصة المروج | الإصدار الاحترافي</title>
+    
+    <meta name="theme-color" content="#041a11">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-app: #fdfaf1;
+            --bg-sidebar: #062b1b;
+            --bg-card: #ffffff;
+            --text-main: #041a11;
+            --accent-gold: #c4a04d;
+            --gold-hover: #e5c06d;
+            --shadow: 0 10px 20px rgba(0,0,0,0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-app: #0a0a0a;
+            --bg-sidebar: #05140d;
+            --bg-card: #161616;
+            --text-main: #e0e0e0;
+            --accent-gold: #d4af37;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-app); 
+            color: var(--text-main);
+            font-family: 'Tajawal', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.5s;
+        }
+
+        .app-header { position: fixed; top: 0; width: 100%; z-index: 2000; box-shadow: var(--shadow); }
+        .gov-bar { background: #000; color: #fff; text-align: center; padding: 4px; font-size: 10px; border-bottom: 1px solid var(--accent-gold); }
+        
+        .main-nav {
+            background: linear-gradient(135deg, #0b422a, #041a11);
+            padding: 10px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: white;
+            outline: none;
+            width: 180px;
+            transition: var(--transition);
+        }
+        .search-box:focus { width: 250px; background: rgba(255,255,255,0.2); }
+
+        .desktop-sidebar {
+            position: fixed; top: 90px; right: 0; width: 260px; bottom: 50px;
+            background: var(--bg-sidebar); border-left: 2px solid var(--accent-gold);
+            padding: 20px 10px; overflow-y: auto;
+        }
+
+        .scrollable-content {
+            position: absolute; top: 90px; bottom: 50px; left: 0; right: 260px;
+            overflow-y: auto; padding: 30px;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        
+        .surah-card {
+            background: var(--bg-card);
+            border: 6px double var(--accent-gold);
+            padding: 35px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        .surah-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .surah-card h3 { font-family: 'Amiri', serif; font-size: 2rem; margin-bottom: 10px; }
+        
+        .completed-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: #27ae60; color: white;
+            width: 25px; height: 25px; border-radius: 50%;
+            display: none; align-items: center; justify-content: center; font-weight: bold;
+        }
+        .is-done .completed-badge { display: flex; }
+
+        .player-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.98); z-index: 8000; display: none; 
+            flex-direction: column; align-items: center; padding: 15px;
+        }
+        
+        .sync-container {
+            display: flex; width: 95%; height: 82vh; gap: 20px; margin-top: 10px;
+        }
+
+        .video-side { flex: 1.3; background: #000; border-radius: 12px; display: flex; align-items: center; border: 1px solid #333; }
+        .text-side { 
+            flex: 1; background: #fff; border-radius: 12px; border: 4px double var(--accent-gold);
+            overflow-y: auto; padding: 30px; color: #000; text-align: center;
+            font-family: 'Amiri', serif; font-size: 1.8rem; line-height: 2.2;
+        }
+
+        .close-btn-gold { 
+            margin-bottom: 10px; padding: 10px 30px;
+            background: var(--accent-gold); color: #000;
+            border: 2px solid #fff; border-radius: 50px; font-weight: 800; cursor: pointer;
+        }
+
+        .grade-item {
+            padding: 12px; margin-bottom: 10px; border-radius: 8px;
+            color: #ccc; border: 1px solid rgba(196,160,77,0.3);
+            cursor: pointer; transition: 0.3s; text-align: center;
+        }
+        .grade-item.active { background: var(--accent-gold); color: #000; font-weight: bold; }
+
+        .sem-switcher { display: flex; background: #e0d9c8; border-radius: 10px; margin: 0 auto 25px; padding: 4px; max-width: 400px; }
+        .sem-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: transparent; }
+        .sem-btn.active { background: var(--bg-sidebar); color: var(--accent-gold); }
+
+        .app-footer { position: fixed; bottom: 0; width: 100%; height: 50px; background: #000; color: var(--accent-gold); display: flex; align-items: center; justify-content: center; font-size: 11px; }
+
+        @media (max-width: 992px) {
+            .desktop-sidebar { display: none; }
+            .scrollable-content { right: 0; }
+            .sync-container { flex-direction: column; overflow-y: auto; }
+            .video-side, .text-side { flex: none; width: 100%; height: 350px; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <div class="app-header">
+        <div class="gov-bar">سلطنة عمان - مدرسة المروج للتعليم الأساسي - أ. فيصل العريبي</div>
+        <header class="main-nav">
+            <div class="brand" style="display:flex; align-items:center; gap:12px;">
+                <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" width="45" height="45" style="border-radius:50%; background:white;">
+                <span onclick="toggleTheme()" style="cursor:pointer; font-size:20px;">🌓</span>
+            </div>
+            <input type="text" class="search-box" placeholder="بحث عن سورة..." oninput="handleSearch(this.value)">
+            <div style="font-family:'Amiri'; color:var(--accent-gold); font-size:1.5rem;">مُصحَف المُرُوج</div>
+        </header>
+    </div>
+
+    <aside class="desktop-sidebar" id="sidebar-list"></aside>
+
+    <main class="scrollable-content">
+        <div class="sem-switcher">
+            <button class="sem-btn active" id="s1" onclick="updateState({sem: 1})">الفصل الأول</button>
+            <button class="sem-btn" id="s2" onclick="updateState({sem: 2})">الفصل الثاني</button>
+        </div>
+        <div class="grid" id="main-grid"></div>
+    </main>
+
+    <footer class="app-footer">
+        <div>جميع الحقوق محفوظة لمدرسة المروج © 2025</div>
+    </footer>
+
+    <div class="player-overlay" id="player">
+        <div style="display:flex; gap:10px;">
+            <button class="close-btn-gold" onclick="markAsComplete()">تم الحفظ ✓</button>
+            <button class="close-btn-gold" style="background:#cc0000; color:white;" onclick="closePlayer()">إغلاق ✕</button>
+        </div>
+        <div class="sync-container">
+            <div class="video-side" id="v-render"></div>
+            <div class="text-side" id="t-render"></div>
+        </div>
+    </div>
+
+    <script>
+        const surahDB = {
+            "الصف الخامس": { 
+                1: [{id: 77, t:"سورة المرسلات", v:"5/cls5_Islamic_Morsalat4.mp4"}, {id: 76, t:"سورة الإنسان", v:"5/cls5_Islamic_Insan.mp4"}],
+                2: [{id: 78, t:"سورة النبأ", v:"5/cls5_Islamic_Naba.mp4"}] 
+            },
+            "الصف السادس": { 1: [{id: 32, t:"سورة السجدة", v:"6/cls6_Islamic_Sajdah.mp4"}], 2: [{id: 67, t:"سورة الملك", v:"6/cls6_Islamic_Mulk.mp4"}] },
+            "الصف السابع": { 1: [{id: 50, t:"سورة ق", v:"7/cls7_Islamic_Qaf.mp4"}], 2: [{id: 55, t:"سورة الرحمن", v:"7/cls7_Islamic_Rahman.mp4"}] }
+        };
+
+        let state = {
+            grade: "الصف الخامس", sem: 1, search: "",
+            currentSurah: null,
+            completedSurahs: JSON.parse(localStorage.getItem('murooj_progress') || '[]')
+        };
+
+        function init() {
+            const side = document.getElementById('sidebar-list');
+            Object.keys(surahDB).forEach(g => {
+                const item = document.createElement('div');
+                item.className = `grade-item ${state.grade === g ? 'active' : ''}`;
+                item.textContent = g;
+                item.onclick = () => updateState({grade: g});
+                side.appendChild(item);
+            });
+            render();
+            // تسجيل PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js');
+            }
+        }
+
+        function updateState(newState) {
+            state = {...state, ...newState};
+            document.querySelectorAll('.grade-item').forEach(el => el.classList.toggle('active', el.textContent === state.grade));
+            document.getElementById('s1').classList.toggle('active', state.sem === 1);
+            document.getElementById('s2').classList.toggle('active', state.sem === 2);
+            render();
+        }
+
+        function handleSearch(val) { state.search = val; render(); }
+
+        function render() {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = "";
+            const list = surahDB[state.grade][state.sem].filter(s => s.t.includes(state.search));
+            list.forEach(surah => {
+                const isDone = state.completedSurahs.includes(surah.id) ? 'is-done' : '';
+                const card = document.createElement('div');
+                card.className = `surah-card ${isDone}`;
+                card.onclick = () => openPlayer(surah);
+                card.innerHTML = `<div class="completed-badge">✓</div><h3>${surah.t}</h3><div style="color:var(--accent-gold); font-size:12px;">۞ تتبع بصري متزامن ۞</div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        async function openPlayer(surah) {
+            state.currentSurah = surah;
+            document.getElementById('player').style.display = 'flex';
+            document.getElementById('v-render').innerHTML = `<video controls autoplay style="width:100%"><source src="https://ict.moe.gov.om/tlawti/video/${surah.v}"></video>`;
+            const tBox = document.getElementById('t-render');
+            tBox.innerHTML = "جاري جلب المصحف...";
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/surah/${surah.id}/ar.quran-uthmani`);
+                const data = await res.json();
+                let html = surah.id !== 1 && surah.id !== 9 ? `<div style="color:var(--accent-gold); margin-bottom:15px;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>` : "";
+                data.data.ayahs.forEach(a => {
+                    let txt = a.text;
+                    if(a.numberInSurah === 1 && surah.id !== 1 && surah.id !== 9) txt = txt.replace("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "");
+                    html += `<span>${txt}</span> <span style="color:var(--accent-gold); font-size:1.2rem;">﴿${a.numberInSurah}﴾</span> `;
+                });
+                tBox.innerHTML = html;
+            } catch (e) { tBox.innerHTML = "حدث خطأ في جلب النص."; }
+        }
+
+        function markAsComplete() {
+            if (!state.completedSurahs.includes(state.currentSurah.id)) {
+                state.completedSurahs.push(state.currentSurah.id);
+                localStorage.setItem('murooj_progress', JSON.stringify(state.completedSurahs));
+            }
+            closePlayer(); render();
+        }
+
+        function closePlayer() { document.getElementById('player').style.display = 'none'; document.getElementById('v-render').innerHTML = ""; }
+        function toggleTheme() {
+            const b = document.body;
+            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+        }
+        init();
+    </script>
+</body>
+</html>
