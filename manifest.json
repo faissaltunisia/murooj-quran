@@ -1,0 +1,16 @@
+{
+  "name": "مُصحَف المُرُوج الرَّقمِي",
+  "short_name": "مصحف المروج",
+  "description": "منصة مدرسة المروج الرقمية لتلاوة وحفظ القرآن الكريم",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#041a11",
+  "theme_color": "#041a11",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
