@@ -180,11 +180,46 @@
             });
         }
 
-        function playVideo(v) {
-            document.getElementById('video-container').innerHTML = `<video src="https://ict.moe.gov.om/tlawti/video/${v}" controls autoplay style="width:100%; height:100%;"></video>`;
-            document.getElementById('video-overlay').style.display = 'flex';
-        }
+    function playVideo(v) {
+    const videoContainer = document.getElementById('video-container');
+    let videoUrl = v.trim();
+    let htmlContent = '';
 
+    // 1. التحقق إذا كان الرابط من اليوتيوب
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+        let videoId = '';
+        if (videoUrl.includes('v=')) {
+            videoId = videoUrl.split('v=')[1].split('&')[0];
+        } else {
+            videoId = videoUrl.split('/').pop();
+        }
+        
+        htmlContent = `
+            <iframe 
+                width="100%" 
+                height="100%" 
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>`;
+    } 
+    // 2. التحقق إذا كان رابطاً مباشراً (الوزارة أو غيره)
+    else {
+        // إذا كان اسم ملف فقط، نضيف رابط الوزارة، وإذا كان رابطاً كاملاً نتركه كما هو
+        let finalUrl = videoUrl.startsWith('http') ? videoUrl : `https://ict.moe.gov.om/tlawti/video/${videoUrl}`;
+        
+        htmlContent = `
+            <video controls autoplay playsinline style="width:100%; height:100%;">
+                <source src="${finalUrl}" type="video/mp4">
+                <source src="${finalUrl.replace('https', 'http')}" type="video/mp4">
+                عذراً، متصفحك لا يدعم تشغيل هذا الفيديو.
+            </video>`;
+    }
+
+    videoContainer.innerHTML = htmlContent;
+    document.getElementById('video-overlay').style.display = 'flex';
+}
         function closeVideo() { document.getElementById('video-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; }
         function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
 
