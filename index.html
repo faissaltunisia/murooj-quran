@@ -3,144 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُصحَف المُرُوج الرَّقمِي</title>
+    <title>مُصحَف المُرُوج الرَّقمِي | أ. فيصل العريبي</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@500;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --bg: #041a11; --gold: #c4a04d; --paper: #fdfaf1; }
+        :root { --bg: #041a11; --gold: #c4a04d; --light: #fdfaf1; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); font-family: 'Tajawal', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
+        body { background: var(--bg); font-family: 'Tajawal', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
         /* الهيدر */
-        .header { background: linear-gradient(180deg, #0b422a 0%, #062b1b 100%); border-bottom: 2px solid var(--gold); padding: 10px; flex-shrink: 0; }
-        .gov { color: #fff; font-size: 10px; text-align: center; margin-bottom: 5px; opacity: 0.8; }
-        .nav-content { display: flex; align-items: center; justify-content: space-between; }
-        .nav-content img { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--gold); background: #fff; }
-        .title { color: var(--gold); font-family: 'Amiri', serif; font-size: 1.2rem; }
+        .gov-bar { background: #000; color: #fff; text-align: center; padding: 6px; font-size: 10px; border-bottom: 1px solid var(--gold); }
+        .nav { background: linear-gradient(180deg, #0b422a 0%, #062b1b 100%); padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--gold); }
+        .nav img { width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid var(--gold); background: #fff; }
+        .nav h1 { font-family: 'Amiri', serif; color: var(--gold); font-size: 1.2rem; }
 
-        .main { display: flex; flex: 1; overflow: hidden; }
+        .main-layout { display: flex; flex: 1; overflow: hidden; }
 
-        /* القائمة الجانبية (الحاسوب) */
-        .sidebar { width: 250px; background: #062b1b; border-left: 2px solid var(--gold); overflow-y: auto; padding: 15px 10px; }
-        /* التبويبات (الهاتف) */
-        .tabs { display: none; background: #062b1b; padding: 8px; gap: 8px; overflow-x: auto; border-bottom: 2px solid var(--gold); }
+        /* القائمة الجانبية للحاسوب */
+        .sidebar { 
+            width: 280px; background: #062b1b; border-left: 2px solid var(--gold); 
+            padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+        }
 
-        .content { flex: 1; overflow-y: auto; background: var(--paper); padding: 15px; padding-bottom: 80px; }
-        
-        .grade-btn { padding: 10px; margin-bottom: 6px; background: rgba(255,255,255,0.05); color: #fff; border-radius: 8px; cursor: pointer; text-align: center; font-size: 13px; border: 1px solid transparent; white-space: nowrap; }
-        .grade-btn.active { background: var(--gold); color: #000; font-weight: bold; }
+        /* القائمة العلوية للهاتف */
+        .mobile-tabs { 
+            display: none; background: #062b1b; padding: 10px; gap: 10px; 
+            overflow-x: auto; border-bottom: 2px solid var(--gold); white-space: nowrap;
+        }
 
-        .sem-box { display: flex; background: #ddd; border-radius: 8px; margin-bottom: 15px; padding: 3px; }
-        .s-btn { flex: 1; padding: 8px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-size: 12px; }
-        .s-btn.active { background: var(--bg); color: var(--gold); }
+        .content { flex: 1; overflow-y: auto; background: var(--light); padding: 20px; padding-bottom: 100px; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-        .card { background: #fff; padding: 20px 10px; text-align: center; border: 2px solid var(--gold); border-radius: 10px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card h3 { font-size: 14px; color: #041a11; }
+        .grade-btn { 
+            padding: 12px; background: rgba(255,255,255,0.05); color: #fff; 
+            border-radius: 10px; cursor: pointer; text-align: center; border: 1px solid transparent;
+            font-size: 14px; transition: 0.3s;
+        }
+        .grade-btn.active { background: var(--gold); color: #000; font-weight: bold; border-color: #fff; }
 
-        /* المشغل المحسن للهاتف */
-        .player-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; }
-        .v-header { padding: 10px; display: flex; justify-content: flex-end; }
-        .v-close { background: var(--gold); border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; }
-        .v-wrap { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .sem-switcher { display: flex; background: #e0d9c8; border-radius: 10px; margin-bottom: 20px; padding: 4px; max-width: 400px; margin-inline: auto; }
+        .sem-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Tajawal'; }
+        .sem-btn.active { background: var(--bg); color: var(--gold); }
 
-        .footer { position: fixed; bottom: 0; width: 100%; background: #000; color: var(--gold); text-align: center; padding: 8px; font-size: 10px; border-top: 1px solid var(--gold); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .card { background: #fff; padding: 25px 15px; text-align: center; border: 3px double var(--gold); border-radius: 12px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
-        @media (max-width: 900px) { .sidebar { display: none; } .tabs { display: flex; } }
+        .footer { position: fixed; bottom: 0; width: 100%; background: #000; color: var(--gold); text-align: center; padding: 10px; font-size: 11px; border-top: 2px solid var(--gold); }
+
+        /* المشغل */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .v-box { width: 95%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 4px solid var(--gold); border-radius: 10px; overflow: hidden; }
+        .close-v { margin-bottom: 15px; padding: 10px 30px; background: var(--gold); border: none; border-radius: 20px; font-weight: bold; cursor: pointer; }
+
+        @media (max-width: 992px) { .sidebar { display: none; } .mobile-tabs { display: flex; } }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="gov">سلطنة عمان - وزارة التربية والتعليم - محافظة ظفار</div>
-    <div class="nav-content">
-        <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png">
-        <div class="title">مُصحَف المُرُوج الرَّقمِي</div>
-        <div style="width:40px"></div>
-    </div>
-</div>
-
-<div class="tabs" id="m-list"></div>
-
-<main class="main">
-    <aside class="sidebar" id="p-list"></aside>
-    <section class="content">
-        <div class="sem-box">
-            <button class="s-btn active" id="b1" onclick="setS(1)">الفصل الأول</button>
-            <button class="s-btn" id="b2" onclick="setS(2)">الفصل الثاني</button>
+    <div class="gov-bar">سلطنة عمان - وزارة التربية والتعليم - محافظة ظفار</div>
+    <div class="nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png">
         </div>
-        <div class="grid" id="grid"></div>
-    </section>
-</main>
+        <h1>مُصحَف المُرُوج الرَّقمِي</h1>
+        <div style="width:45px"></div>
+    </div>
 
-<footer class="footer">تطوير: أ. فيصل العريبي © 2025</footer>
+    <div class="mobile-tabs" id="m-tabs"></div>
 
-<div class="player-overlay" id="pop">
-    <div class="v-header"><button class="v-close" onclick="closeV()">إغلاق ✕</button></div>
-    <div class="v-wrap" id="v-cont"></div>
-</div>
+    <main class="main-layout">
+        <aside class="sidebar" id="p-tabs"></aside>
+        <section class="content">
+            <div class="sem-switcher">
+                <button class="sem-btn active" id="s1" onclick="changeSem(1)">الفصل الأول</button>
+                <button class="sem-btn" id="s2" onclick="changeSem(2)">الفصل الثاني</button>
+            </div>
+            <div class="grid" id="grid"></div>
+        </section>
+    </main>
 
-<script>
-    const URL = 'https://vchzkeebmjqiohgoknnm.supabase.co';
-    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
-    const _sb = supabase.createClient(URL, KEY);
+    <footer class="footer">تطوير وبرمجة: أ. فيصل العريبي © 2025م</footer>
 
-    let data = [], g = "الصف الخامس", s = 1;
+    <div class="overlay" id="video-overlay">
+        <button class="close-v" onclick="closePlayer()">إغلاق ✕</button>
+        <div class="v-box" id="player-container"></div>
+    </div>
 
-    async function load() {
-        const { data: res } = await _sb.from('surahs').select('*');
-        data = res || [];
-        drawMenu();
-    }
+    <script>
+        const SB_URL = 'https://vchzkeebmjqiohgoknnm.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-    function drawMenu() {
-        const gs = ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"];
-        const p = document.getElementById('p-list'), m = document.getElementById('m-list');
-        p.innerHTML = ''; m.innerHTML = '';
-        gs.forEach(item => {
-            const btn = `<div class="grade-btn ${item===g?'active':''}" onclick="setG('${item}')">${item}</div>`;
-            p.insertAdjacentHTML('beforeend', btn);
-            m.insertAdjacentHTML('beforeend', btn);
-        });
-        drawGrid();
-    }
+        let allData = [], currentGrade = "الصف الخامس", currentSemester = 1;
 
-    function setG(val) { g = val; drawMenu(); }
-    function setS(val) { s = val; document.getElementById('b1').className=`s-btn ${s===1?'active':''}`; document.getElementById('b2').className=`s-btn ${s===2?'active':''}`; drawGrid(); }
-
-    function drawGrid() {
-        const div = document.getElementById('grid'); div.innerHTML = '';
-        const items = data.filter(x => x.grade === g && x.semester == s);
-        items.forEach(x => {
-            div.innerHTML += `<div class="card" onclick="play('${x.video_path}')"><h3>${x.title}</h3></div>`;
-        });
-    }
-
-    function play(path) {
-        const cont = document.getElementById('v-cont');
-        document.getElementById('pop').style.display = 'flex';
-        let full = path.includes('http') ? path : `https://ict.moe.gov.om/tlawti/video/${path}`;
-        
-        if(full.includes('youtube') || full.includes('youtu.be')) {
-            let id = full.includes('v=') ? full.split('v=')[1].split('&')[0] : full.split('/').pop();
-            cont.innerHTML = `<iframe width="100%" height="300" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
-        } else {
-            // حل الهاتف الجذري: استخدام وسم فيديو مباشر مع تفعيل التحكم الكامل
-            cont.innerHTML = `<video id="videoPlayer" controls autoplay playsinline style="width:100%; max-height:80vh; background:#000;">
-                <source src="${full}" type="video/mp4">
-            </video>`;
-            
-            // محاولة تشغيل إضافية للآيفون
-            setTimeout(() => {
-                const v = document.getElementById('videoPlayer');
-                if(v) v.play();
-            }, 500);
+        async function init() {
+            const { data, error } = await _supabase.from('surahs').select('*');
+            if (data) {
+                allData = data;
+                renderGrades();
+            }
         }
-    }
 
-    function closeV() { document.getElementById('pop').style.display = 'none'; document.getElementById('v-cont').innerHTML = ''; }
-    
-    load();
-</script>
+        function renderGrades() {
+            const grades = ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"];
+            const p = document.getElementById('p-tabs'), m = document.getElementById('m-tabs');
+            p.innerHTML = ''; m.innerHTML = '';
+            
+            grades.forEach(g => {
+                const btn = `<div class="grade-btn ${g === currentGrade ? 'active' : ''}" onclick="changeGrade('${g}')">${g}</div>`;
+                p.insertAdjacentHTML('beforeend', btn);
+                m.insertAdjacentHTML('beforeend', btn);
+            });
+            renderGrid();
+        }
+
+        function changeGrade(g) { currentGrade = g; renderGrades(); }
+        
+        function changeSem(s) { 
+            currentSemester = s;
+            document.getElementById('s1').className = `sem-btn ${s===1?'active':''}`;
+            document.getElementById('s2').className = `sem-btn ${s===2?'active':''}`;
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            const items = allData.filter(i => i.grade === currentGrade && i.semester == currentSemester);
+            
+            if (items.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px;">قريباً سيتم إضافة السور..</p>';
+                return;
+            }
+
+            items.forEach(item => {
+                grid.innerHTML += `<div class="card" onclick="playVideo('${item.video_path}')"><h3>${item.title}</h3></div>`;
+            });
+        }
+
+        function playVideo(path) {
+            const container = document.getElementById('player-container');
+            const overlay = document.getElementById('video-overlay');
+            let url = path.trim();
+            let finalUrl = url.includes('http') ? url : `https://ict.moe.gov.om/tlawti/video/${url}`;
+
+            if (finalUrl.includes('youtube.com') || finalUrl.includes('youtu.be')) {
+                let id = finalUrl.includes('v=') ? finalUrl.split('v=')[1].split('&')[0] : finalUrl.split('/').pop();
+                container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+            } else {
+                // مشغل الفيديو المتوافق مع الهاتف والحاسوب
+                container.innerHTML = `
+                    <video controls autoplay playsinline style="width:100%; height:100%; background:#000;">
+                        <source src="${finalUrl}?t=${new Date().getTime()}" type="video/mp4">
+                    </video>`;
+            }
+            overlay.style.display = 'flex';
+        }
+
+        function closePlayer() {
+            document.getElementById('video-overlay').style.display = 'none';
+            document.getElementById('player-container').innerHTML = '';
+        }
+
+        init();
+    </script>
 </body>
 </html>
