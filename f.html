@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُصحَف المُرُوج - الإصدار الشامل</title>
+    <title>مُصحَف المُرُوج - الإصدار المصلح</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -16,10 +16,10 @@
         body { background: var(--primary); font-family: 'Tajawal', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         .top-bar { background: #000; color: var(--accent); text-align: center; padding: 5px; font-size: 10px; font-weight: bold; border-bottom: 1px solid var(--accent); }
-        .main-header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent); z-index: 1000; }
+        .main-header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent); box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 1000; }
         .logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
 
-        .app-container { display: flex; flex: 1; overflow: hidden; height: calc(100vh - 120px); }
+        .app-container { display: flex; flex: 1; overflow: hidden; }
 
         /* الشريط الجانبي */
         .sidebar { width: 240px; background: var(--sidebar-bg); border-left: 2px solid var(--accent); display: flex; flex-direction: column; }
@@ -32,12 +32,10 @@
         .main-content { flex: 1; overflow-y: auto; background: var(--bg); padding: 25px; padding-bottom: 120px; }
         .card-ch { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--accent); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         
-        /* تبويب الفصول */
         .sem-nav { display: flex; background: #e2dbc9; border-radius: 50px; padding: 5px; max-width: 450px; margin: 0 auto 30px; border: 1px solid var(--accent); }
         .sem-tab { flex: 1; padding: 12px; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; font-family: 'Tajawal'; transition: 0.3s; color: var(--primary); }
-        .sem-tab.active { background: var(--primary); color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .sem-tab.active { background: var(--primary); color: var(--accent); }
 
-        /* الشبكة والبطاقات الكبيرة */
         .surah-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
         .surah-item { 
             background: #fff; padding: 45px 20px; border-radius: 20px; text-align: center; 
@@ -46,20 +44,40 @@
         }
         .surah-item:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 15px 30px rgba(196, 160, 77, 0.2); }
 
-        /* المشغل و HUD */
-        .player-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; align-items: center; justify-content: center; z-index: 10000; flex-direction: column; }
-        .player-box { width: 95%; max-width: 850px; aspect-ratio: 16/9; background: #000; border: 3px solid var(--accent); border-radius: 15px; overflow: hidden; }
-        .hud-bar { width: 95%; max-width: 850px; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; display: none; }
+        /* --- حل مشكلة حجم الفيديو --- */
+        .player-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; align-items: center; justify-content: center; z-index: 10000; flex-direction: column; padding: 10px; }
+        
+        .player-box { 
+            width: 100%; 
+            max-width: 900px; 
+            background: #000; 
+            border: 3px solid var(--accent); 
+            border-radius: 15px; 
+            overflow: hidden;
+            position: relative;
+            /* يضمن بقاء الفيديو بنسبة 16:9 لمنع التمدد أو القص */
+            aspect-ratio: 16 / 9;
+        }
+        
+        /* جعل الفيديو والـ Iframe يملآن الصندوق بالكامل دون قص */
+        iframe, video { 
+            width: 100%; 
+            height: 100%; 
+            border: none;
+            object-fit: contain; /* يضمن رؤية الفيديو بالكامل */
+        }
+
+        .hud-bar { width: 100%; max-width: 900px; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; display: none; }
         .progress-outer { height: 12px; background: #333; border-radius: 6px; overflow: hidden; margin-top: 10px; }
         .progress-inner { height: 100%; background: var(--gold-gradient); width: 0%; transition: 0.5s; }
 
         .footer { background: #000; color: var(--accent); text-align: center; padding: 12px; border-top: 2px solid var(--accent); font-size: 11px; font-weight: bold; position: fixed; bottom: 0; width: 100%; z-index: 1001; }
 
-        /* النوافذ المنبثقة */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 11000; padding: 20px; }
-        .gold-box { background: var(--primary); border: 3px solid var(--accent); border-radius: 25px; width: 100%; max-width: 450px; padding: 35px; text-align: center; color: #fff; box-shadow: 0 0 40px rgba(196, 160, 77, 0.4); }
-
-        @media (max-width: 768px) { .sidebar { width: 110px; } .grade-link { font-size: 0.8rem; padding: 15px 2px; text-align: center; } .surah-grid { grid-template-columns: 1fr 1fr; gap: 15px; } .surah-item { padding: 30px 10px; font-size: 1.1rem; } }
+        @media (max-width: 768px) { 
+            .sidebar { width: 110px; } 
+            .grade-link { font-size: 0.8rem; padding: 15px 2px; text-align: center; } 
+            .surah-item { padding: 30px 10px; font-size: 1.1rem; } 
+        }
     </style>
 </head>
 <body>
@@ -77,7 +95,7 @@
 
     <div class="app-container">
         <aside class="sidebar">
-            <div class="btn-def" onclick="toggleAbout(true)">۞ تعريف المنصة</div>
+            <div class="btn-def" onclick="alert('مُصحَف المُرُوج الرَّقمِي\nإشراف الأستاذ: فيصل العريبي')">۞ تعريف المنصة</div>
             <div class="sidebar-menu" id="grades-list"></div>
         </aside>
 
@@ -101,19 +119,11 @@
         </main>
     </div>
 
-    <div class="overlay" id="about-overlay" onclick="toggleAbout(false)">
-        <div class="gold-box" onclick="event.stopPropagation()">
-            <h2 style="font-family:'Amiri'; color:var(--accent); font-size:2rem; margin-bottom:15px;">تعريف المنصة</h2>
-            <p style="line-height:1.7; color:#e2dbc9; margin-bottom:25px;">منصة رقمية تفاعلية لتلاوة القرآن الكريم بمدرسة المروج.<br>إشراف الأستاذ: <b>فيصل العريبي</b></p>
-            <button onclick="toggleAbout(false)" style="background:var(--accent); padding:10px 40px; border:none; border-radius:10px; font-weight:900; cursor:pointer;">إغلاق</button>
-        </div>
-    </div>
-
     <div class="player-modal" id="player-modal">
         <div class="player-box" id="p-cont"></div>
         <div id="hud-bar" class="hud-bar">
-            <div style="display:flex; justify-content:space-between; color:var(--accent); font-weight:bold; font-size:0.9rem;">
-                <span id="pct-txt">0%</span><span>نسبة الاستماع المطلوبة (75%)</span>
+            <div style="display:flex; justify-content:space-between; color:var(--accent); font-weight:bold; font-size:0.8rem;">
+                <span id="pct-txt">0%</span><span>نسبة الاستماع للحصول على الوسام</span>
             </div>
             <div class="progress-outer"><div class="progress-inner" id="bar-inner"></div></div>
         </div>
@@ -143,13 +153,7 @@
         }
 
         function setGrade(g) { currentGrade = g; renderSidebar(); refresh(); }
-        
-        function switchSem(s) { 
-            currentSem = s; 
-            document.getElementById('s1').className = s===1?'sem-tab active':'sem-tab'; 
-            document.getElementById('s2').className = s===2?'sem-tab active':'sem-tab'; 
-            refresh(); 
-        }
+        function switchSem(s) { currentSem = s; document.getElementById('s1').className = s===1?'sem-tab active':'sem-tab'; document.getElementById('s2').className = s===2?'sem-tab active':'sem-tab'; refresh(); }
 
         function refresh() {
             const list = allSurahs.filter(s => s.grade === currentGrade && s.semester == currentSem);
@@ -159,7 +163,7 @@
         }
 
         function confirmChallenge() {
-            if(confirm("مرحباً بك في تحدي اليوم! \nاستعد للاستماع بتركيز، تذكر أنه لا يمكنك تقديم الفيديو في وضع التحدي.\n\nهل أنت مستعد للبدء؟")) {
+            if(confirm("استعد للتحدي! \nيجب الاستماع للسورة بتركيز دون تقديم الفيديو للفوز بوسام بطل اليوم.\n\nهل أنت جاهز؟")) {
                 const list = allSurahs.filter(s => s.grade === currentGrade && s.semester == currentSem);
                 const dIdx = new Date().getDate() % (list.length || 1);
                 if(list[dIdx]) playMedia(list[dIdx].video_path, true);
@@ -175,11 +179,11 @@
             if (path.includes('youtube.com') || path.includes('youtu.be')) {
                 let id = path.split('v=')[1] || path.split('/').pop();
                 if(id.includes('&')) id = id.split('&')[0];
-                container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&controls=${mode?0:1}" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+                container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&controls=${mode?0:1}&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
                 if(mode) simulateProgress();
             } else {
                 const url = path.includes('http') ? path : `https://ict.moe.gov.om/tlawti/video/${path}`;
-                container.innerHTML = `<video id="v-player" src="${url}" controls="${!mode}" autoplay></video>`;
+                container.innerHTML = `<video id="v-player" src="${url}" controls="${!mode}" autoplay playsinline></video>`;
                 if(mode) trackVideo();
             }
         }
@@ -195,23 +199,22 @@
 
         function simulateProgress() {
             let p = 0; clearInterval(timer);
-            timer = setInterval(() => { p++; updateHUD(p); if(p >= 75) clearInterval(timer); }, 1400); 
+            timer = setInterval(() => { p++; updateHUD(p); if(p >= 80) clearInterval(timer); }, 1500); 
         }
 
         function updateHUD(p) {
             if(isNaN(p)) return;
             document.getElementById('bar-inner').style.width = p + '%';
             document.getElementById('pct-txt').innerText = p + '%';
-            if(p >= 75) { localStorage.setItem('murooj_win_' + new Date().toDateString(), '1'); checkWin(); }
+            if(p >= 80) { localStorage.setItem('murooj_win_' + new Date().toDateString(), '1'); checkWin(); }
         }
 
         function checkWin() {
             if(localStorage.getItem('murooj_win_' + new Date().toDateString())) {
-                document.getElementById('ch-action').innerHTML = '<span style="color:green; font-weight:bold;">🏆 تم الإنجاز اليوم</span>';
+                document.getElementById('ch-action').innerHTML = '<span style="color:green; font-weight:bold;">🏆 بطل اليوم</span>';
             }
         }
 
-        function toggleAbout(s) { document.getElementById('about-overlay').style.display = s?'flex':'none'; }
         function closePlayer() { document.getElementById('p-cont').innerHTML = ""; clearInterval(timer); document.getElementById('player-modal').style.display = 'none'; }
 
         init();
