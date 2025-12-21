@@ -1,4 +1,4 @@
-const cacheName = 'murooj-v4'; // قمنا بتغيير الإصدار لتنظيف الكاش القديم
+const cacheName = 'murooj-v5'; // قمنا بتغيير الإصدار لتنظيف الكاش القديم
 const assets = ['./', './index.html', './manifest.json'];
 
 // عند التثبيت: تخزين الملفات الأساسية
