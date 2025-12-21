@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُصحَف المُرُوج - النسخة المرنة</title>
+    <title>مُصحَف المُرُوج - الإصدار الشامل</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -16,82 +16,71 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--primary); font-family: 'Tajawal', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* الهيدر */
-        .header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent); z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        /* --- الشريط العلوي (تمت الإضافة) --- */
+        .top-stripe { background: #000; color: var(--accent); text-align: center; padding: 4px; font-size: 10px; font-weight: bold; border-bottom: 1px solid var(--accent); }
+        .header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent); z-index: 1000; }
+        .logo-box { display: flex; align-items: center; gap: 10px; }
         .logo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
 
         .app-body { display: flex; flex: 1; overflow: hidden; }
 
-        /* الشريط الجانبي */
-        .sidebar { width: 240px; background: var(--sidebar-bg); border-left: 2px solid var(--accent); display: flex; flex-direction: column; transition: 0.3s; }
+        /* --- الشريط الجانبي --- */
+        .sidebar { width: 240px; background: var(--sidebar-bg); border-left: 2px solid var(--accent); display: flex; flex-direction: column; }
+        /* زر تعريف المنصة (تمت الإضافة) */
+        .btn-about-trigger { background: var(--gold-gradient); color: var(--primary); padding: 20px; text-align: center; cursor: pointer; font-weight: 900; font-size: 1.1rem; border-bottom: 3px solid var(--primary); }
         .sidebar-nav { flex: 1; overflow-y: auto; scrollbar-width: none; }
-        .grade-item { padding: 18px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; transition: 0.3s; }
+        .grade-item { padding: 18px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; }
         .grade-item.active { background: rgba(196,160,77,0.2); color: var(--accent); border-right: 4px solid var(--accent); }
 
         /* المحتوى */
         .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 20px; padding-bottom: 100px; }
 
-        /* بطاقة التحدي - تنسيق مدمج */
+        /* بطاقة التحدي */
         .challenge-banner {
             background: #fff; border: 2.5px solid var(--accent); border-radius: 15px;
             padding: 12px 20px; margin: 0 auto 20px; display: flex; align-items: center; 
             justify-content: space-between; max-width: 600px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
         .ch-info p { font-weight: 900; color: var(--primary); font-size: 1.1rem; }
-        .btn-play-ch { background: var(--primary); color: var(--accent); border: 1px solid var(--accent); padding: 8px 20px; border-radius: 50px; font-weight: 900; cursor: pointer; }
 
-        /* تنسيق الفصول - أكثر احترافية */
+        /* الفصول الدراسية */
         .sem-box { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
         .sem-btn { 
-            padding: 10px 30px; border-radius: 12px; border: 2px solid var(--primary); 
-            background: #fff; color: var(--primary); font-weight: 900; cursor: pointer; transition: 0.3s;
+            padding: 10px 25px; border-radius: 12px; border: 2px solid var(--primary); 
+            background: #fff; color: var(--primary); font-weight: 900; cursor: pointer;
         }
-        .sem-btn.active { background: var(--primary); color: var(--accent); border-color: var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+        .sem-btn.active { background: var(--primary); color: var(--accent); border-color: var(--accent); }
 
         /* الشبكة */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .card { background: #fff; padding: 35px 10px; border-radius: 15px; text-align: center; border: 1px solid #ddd; cursor: pointer; font-weight: 900; font-size: 1.1rem; color: var(--primary); }
-        .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .card { background: #fff; padding: 35px 10px; border-radius: 15px; text-align: center; border: 1px solid #ddd; cursor: pointer; font-weight: 900; color: var(--primary); }
 
-        /* --- المشغل المرن (Responsive Player) --- */
+        /* المشغل المرن */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; padding: 15px; }
-        
         .player-frame { 
-            width: 95vw; /* يأخذ معظم عرض الشاشة في الهاتف */
-            max-width: 850px; /* لا يتجاوز هذا الحجم في الحاسوب */
-            aspect-ratio: 16 / 9; /* يحافظ على أبعاد الفيديو */
-            background: #000; 
-            border: 2px solid var(--accent); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            width: 95vw; max-width: 850px; aspect-ratio: 16/9; 
+            background: #000; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; position: relative;
         }
-        .shield { position: absolute; inset: 0; z-index: 100; cursor: not-allowed; } /* تظهر في وضع التحدي فقط */
+        .shield { position: absolute; inset: 0; z-index: 100; cursor: not-allowed; }
         
-        iframe, video { width: 100%; height: 100%; border: none; }
-
         .hud-monitor { width: 95vw; max-width: 850px; margin-top: 20px; text-align: center; color: #fff; }
-        .pct-val { font-size: 3rem; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 10px; }
-        .progress-line { height: 8px; background: #222; border-radius: 10px; overflow: hidden; border: 1px solid #444; }
+        .pct-val { font-size: 3rem; font-weight: 900; color: var(--accent); }
+        .progress-line { height: 8px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .fill { height: 100%; width: 0%; background: var(--gold-gradient); transition: 0.5s; }
 
         .btn-exit { margin-top: 25px; background: transparent; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 45px; border-radius: 50px; font-weight: 900; cursor: pointer; }
 
         .footer { background: #000; padding: 10px; text-align: center; font-size: 11px; color: var(--accent); border-top: 1px solid var(--accent); position: fixed; bottom: 0; width: 100%; }
 
-        @media (max-width: 768px) { 
-            .sidebar { width: 100px; } 
-            .grade-item { font-size: 0.75rem; padding: 15px 10px; } 
-            .pct-val { font-size: 2rem; }
-            .sem-btn { padding: 8px 15px; font-size: 0.8rem; }
-        }
+        @media (max-width: 768px) { .sidebar { width: 100px; } .grade-item { font-size: 0.75rem; } .pct-val { font-size: 2rem; } }
     </style>
 </head>
 <body>
 
+    <div class="top-stripe">وزارة التربية والتعليم | محافظة ظفار | مدرسة المروج</div>
+
     <header class="header">
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div class="logo-box">
             <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" class="logo">
             <p style="color:var(--accent); font-weight:900; font-size:0.85rem;">مدرسة المروج</p>
         </div>
@@ -101,33 +90,42 @@
 
     <div class="app-body">
         <aside class="sidebar">
+            <div class="btn-about-trigger" onclick="document.getElementById('modal-about').style.display='flex'">۞ تعريف المنصة</div>
             <div class="sidebar-nav" id="grades-list"></div>
         </aside>
 
         <main class="content">
             <div class="challenge-banner">
                 <div class="ch-info">
-                    <span style="color:#888; font-size:0.7rem; font-weight:bold;">تحدي التلاوة اليومي:</span>
-                    <p id="ch-title">تحميل التحدي...</p>
+                    <span style="color:#888; font-size:0.7rem; font-weight:bold;">تحدي اليوم:</span>
+                    <p id="ch-title">جاري التحميل...</p>
                 </div>
-                <button class="btn-play-ch" onclick="confirmChallenge()">ابدأ التحدي</button>
+                <button class="sem-btn active" onclick="document.getElementById('modal-confirm').style.display='flex'" style="padding:8px 20px;">ابدأ التحدي</button>
             </div>
 
             <div class="sem-box">
-                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الدراسي الأول</button>
-                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الدراسي الثاني</button>
+                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الأول</button>
+                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الثاني</button>
             </div>
 
             <div id="surah-grid" class="grid"></div>
         </main>
     </div>
 
-    <div class="modal" id="modal-confirm" style="background:rgba(0,0,0,0.9);">
+    <div class="modal" id="modal-about">
+        <div style="background:var(--primary); border:2px solid var(--accent); padding:30px; border-radius:20px; text-align:center; max-width:400px; color:#fff;">
+            <h2 style="color:var(--accent); margin-bottom:15px;">مُصحَف المُرُوج</h2>
+            <p style="line-height:1.6;">منصة رقمية لتمكين الطلاب من إتقان تلاوة القرآن الكريم.<br>إشراف الأستاذ: <b>فيصل العريبي</b></p>
+            <button class="btn-about-trigger" onclick="document.getElementById('modal-about').style.display='none'" style="width:100%; border-radius:10px; margin-top:20px; border:none;">إغلاق</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-confirm">
         <div style="background:var(--primary); border:2px solid var(--accent); padding:30px; border-radius:20px; text-align:center; max-width:350px;">
             <h2 style="color:var(--accent)">وضع المراقبة</h2>
-            <p style="color:#fff; margin:15px 0;">سيتم إخفاء أدوات التحكم بالفيديو.<br>المطلوب 75% لإكمال المهمة.</p>
+            <p style="color:#fff; margin:15px 0;">سيتم قفل التحكم بالفيديو.<br>يجب إكمال 75% للفوز بالوسام.</p>
             <button class="sem-btn active" onclick="startChallenge()" style="width:100%; margin-bottom:10px;">بدء الآن</button>
-            <button onclick="hideModal('modal-confirm')" style="background:transparent; color:#fff; border:none; cursor:pointer;">إلغاء</button>
+            <button onclick="document.getElementById('modal-confirm').style.display='none'" style="background:transparent; color:#fff; border:none; cursor:pointer;">إلغاء</button>
         </div>
     </div>
 
@@ -136,19 +134,15 @@
             <div class="shield" id="player-shield" style="display:none;"></div>
             <div id="video-container" style="width:100%; height:100%;"></div>
         </div>
-        
         <div class="hud-monitor" id="hud">
             <div class="pct-val" id="pct-txt">0%</div>
-            <p style="color:var(--accent); font-weight:bold;">نسبة الإنجاز (المطلوب 75%)</p>
-            <div class="progress-line">
-                <div class="fill" id="bar-fill"></div>
-            </div>
+            <p style="color:var(--accent); font-weight:bold;">نسبة الإنجاز المحققة</p>
+            <div class="progress-line"><div class="fill" id="bar-fill"></div></div>
         </div>
-
-        <button class="btn-exit" onclick="handleExit()">إغلاق الفيديو والخروج</button>
+        <button class="btn-exit" onclick="handleExit()">إغلاق وإنهاء</button>
     </div>
 
-    <footer class="footer">وزارة التربية والتعليم - محافظة ظفار - سلطنة عمان</footer>
+    <footer class="footer">جميع الحقوق محفوظة - مدرسة المروج 2025</footer>
 
     <script>
         const SB_URL = 'https://vchzkeebmjqiohgoknnm.supabase.co';
@@ -176,11 +170,8 @@
             if(list.length) document.getElementById('ch-title').innerText = list[new Date().getDate() % list.length].title;
         }
 
-        function confirmChallenge() { document.getElementById('modal-confirm').style.display = 'flex'; }
-        function hideModal(id) { document.getElementById(id).style.display = 'none'; }
-
         function startChallenge() {
-            hideModal('modal-confirm');
+            document.getElementById('modal-confirm').style.display='none';
             const list = surahs.filter(s => s.grade === grade && s.semester == sem);
             const daily = list[new Date().getDate() % list.length];
             if(daily) play(daily.video_path, true);
@@ -223,7 +214,7 @@
         function handleExit() {
             const p = parseInt(document.getElementById('pct-txt').innerText);
             if(isCh && p < 75) {
-                if(confirm("لم تصل للنسبة المطلوبة (75%). هل تود حقاً الخروج؟")) resetPlayer();
+                if(confirm("لم تصل للنسبة المطلوبة (75%). هل تود الخروج؟")) resetPlayer();
             } else { resetPlayer(); }
         }
 
