@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>منصة المروج | أ. فيصل العريبي</title>
     
+    <link rel="manifest" href="./manifest.json">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -83,7 +85,7 @@
             border-top-right-radius: 25px;
         }
 
-        /* مفتاح الفصول الدراسية */
+        /* مفتاح الفصول */
         .sem-switcher { 
             display: flex; 
             background: #e0d9c8; 
@@ -94,20 +96,12 @@
             max-width: 350px; 
         }
         .sem-btn { 
-            flex: 1; 
-            padding: 10px; 
-            border: none; 
-            border-radius: 10px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            background: transparent; 
-            font-size: 13px;
-            color: var(--primary-green);
-            transition: 0.3s;
+            flex: 1; padding: 10px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; 
+            background: transparent; font-size: 13px; color: var(--primary-green);
         }
         .sem-btn.active { background: var(--primary-green); color: var(--accent-gold); }
 
-        /* شبكة السور (عمودين) */
+        /* الشبكة الثنائية */
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -121,57 +115,27 @@
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid #e0d9c8;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
         .surah-card i { font-size: 28px; color: var(--primary-green); opacity: 0.9; }
         .surah-card h3 { font-size: 13px; color: #041a11; font-weight: 800; }
-        .surah-card p { font-size: 10px; color: var(--accent-gold); font-weight: bold; }
 
-        /* البار السفلي */
+        /* البار السفلي الثابت (Sooq Cars Style) */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--primary-green);
-            height: 75px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 2px solid var(--accent-gold);
-            z-index: 5000;
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--primary-green);
+            height: 75px; display: flex; justify-content: space-around; align-items: center;
+            border-top: 2px solid var(--accent-gold); z-index: 5000;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            color: rgba(255,255,255,0.6);
-            font-size: 10px;
-            flex: 1;
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: rgba(255,255,255,0.6); font-size: 10px; flex: 1; }
         .nav-item.active { color: var(--accent-gold); }
         .nav-item i { font-size: 18px; }
 
         .nav-center {
-            position: relative;
-            top: -22px;
-            background: var(--accent-gold);
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-green);
-            font-size: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            position: relative; top: -22px; background: var(--accent-gold); width: 58px; height: 58px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: var(--primary-green); font-size: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             border: 4px solid var(--app-body-bg);
         }
 
@@ -186,10 +150,7 @@
 </head>
 <body>
 
-    <div id="loader">
-        <div class="spinner"></div>
-        <p style="margin-top:15px; font-weight:bold; color:var(--primary-green);">جاري تحميل البيانات...</p>
-    </div>
+    <div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-weight:bold; color:var(--primary-green);">جاري جلب البيانات...</p></div>
 
     <div class="app-header">
         <div class="gov-bar">سلطنة عمان - وزارة التربية والتعليم - محافظة ظفار</div>
@@ -201,7 +162,6 @@
             <div class="app-title">مُصحَف المُرُوج</div>
             <div style="width:40px; text-align:left; color:var(--accent-gold)"><i class="fas fa-bell"></i></div>
         </header>
-        
         <div class="mobile-tabs" id="mobile-grades"></div>
     </div>
 
@@ -210,13 +170,11 @@
             <button class="sem-btn" id="btn-s1" onclick="updateSem(1)">الفصل الأول</button>
             <button class="sem-btn" id="btn-s2" onclick="updateSem(2)">الفصل الثاني</button>
         </div>
-
-        <div id="grid" class="grid-container">
-            </div>
+        <div id="grid" class="grid-container"></div>
     </main>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="window.location.reload()">
+        <div class="nav-item active" onclick="location.reload()">
             <i class="fas fa-home"></i>
             <span>الرئيسية</span>
         </div>
@@ -224,16 +182,14 @@
             <i class="fas fa-info-circle"></i>
             <span>تعريف</span>
         </div>
-        <div class="nav-center" onclick="alert('قريباً: إضافة سورة للمفضلة')">
-            <i class="fas fa-plus"></i>
-        </div>
+        <div class="nav-center"><i class="fas fa-plus"></i></div>
         <div class="nav-item">
             <i class="fas fa-star"></i>
             <span>النتائج</span>
         </div>
         <div class="nav-item">
             <i class="fas fa-user-graduate"></i>
-            <span>الملف</span>
+            <span>حسابي</span>
         </div>
     </nav>
 
@@ -245,12 +201,21 @@
     <div class="overlay" id="info-modal">
         <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%; border-top:8px solid var(--accent-gold);">
             <h3 style="color:var(--primary-green); font-family:'Amiri'; font-size:1.5rem;">۞ تعريف المنصة</h3>
-            <p style="margin:20px 0; font-size:14px; color:#444; line-height:1.6;">مرحباً بكم في مُصحَف المُرُوج الرَّقمِي، تهدف المنصة إلى تيسير حفظ وتلاوة السور المقررة لطلابنا الأعزاء.</p>
+            <p style="margin:20px 0; font-size:14px; color:#444; line-height:1.6;">منصة مدرسة المروج الرقمية تهدف لتيسير تلاوة وحفظ السور المقررة للطلاب.</p>
             <button onclick="toggleModal('info-modal', false)" style="background:var(--primary-green); color:var(--accent-gold); border:none; padding:12px 40px; border-radius:10px; font-weight:bold; width:100%;">العودة</button>
         </div>
     </div>
 
     <script>
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('SW Registration Failed', err));
+            });
+        }
+
         const SB_URL = 'https://vchzkeebmjqiohgoknnm.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
@@ -259,7 +224,8 @@
 
         async function init() {
             try {
-                const { data } = await _supabase.from('surahs').select('*');
+                const { data, error } = await _supabase.from('surahs').select('*');
+                if (error) throw error;
                 data.forEach(r => {
                     if (!db[r.grade]) db[r.grade] = { 1: [], 2: [] };
                     db[r.grade][r.semester].push({ t: r.title, v: r.video_path });
@@ -267,7 +233,7 @@
                 renderGrades();
                 updateSem(currentS);
                 document.getElementById('loader').style.display = 'none';
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Data Fetch Error:", e); }
         }
 
         function renderGrades() {
@@ -277,7 +243,7 @@
         }
 
         function updateGrade(g) { currentG = g; localStorage.setItem('g', g); renderGrades(); renderGrid(); }
-
+        
         function updateSem(s) { 
             currentS = s; localStorage.setItem('s', s);
             document.getElementById('btn-s1').className = `sem-btn ${s===1?'active':''}`;
@@ -289,14 +255,13 @@
             const grid = document.getElementById('grid'); grid.innerHTML = '';
             const items = (db[currentG] && db[currentG][currentS]) || [];
             if(items.length === 0) {
-                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#888; font-size:12px;">لا توجد سور مضافة لهذا الفصل حالياً.</p>';
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#888; font-size:12px;">لا توجد سور مضافة حالياً.</p>';
                 return;
             }
             grid.innerHTML = items.map(i => `
                 <div class="surah-card" onclick="playVideo('${i.v}')">
                     <i class="fas fa-quran"></i>
                     <h3>${i.t}</h3>
-                    <p>۞ تلاوة تعليمية ۞</p>
                 </div>
             `).join('');
         }
