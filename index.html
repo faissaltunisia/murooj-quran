@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>منصة المروج | أ. فيصل العريبي</title>
     
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@500;800&display=swap" rel="stylesheet">
     
@@ -39,14 +37,13 @@
 
         .main-layout { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* القوائم */
         .desktop-sidebar { width: var(--sidebar-width); background: #062b1b; border-left: 2px solid var(--accent-gold); padding: 20px 10px; overflow-y: auto; }
         .mobile-tabs { display: none; background: #062b1b; padding: 10px; gap: 10px; overflow-x: auto; border-bottom: 2px solid var(--accent-gold); }
 
-        /* المحتوى */
-        .content-area { flex: 1; overflow-y: auto; background: var(--app-body-bg); padding: 20px; padding-bottom: 120px; }
+        /* المحتوى: زدنا التباعد السفلي لكي لا يختفي المحتوى خلف الشريط الثابت */
+        .content-area { flex: 1; overflow-y: auto; background: var(--app-body-bg); padding: 20px; padding-bottom: 150px; }
 
-        #loader { position: absolute; inset: 0; background: var(--app-body-bg); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #loader { position: absolute; inset: 0; background: var(--app-body-bg); z-index: 6000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -54,38 +51,56 @@
         .grade-item.active { background: var(--accent-gold); color: #000; font-weight: bold; border-color: #fff; }
 
         .surah-card { background: #fff; padding: 25px; text-align: center; border: 4px double var(--accent-gold); border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .surah-card:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .surah-card:hover { transform: scale(1.02); }
 
         .sem-switcher { display: flex; background: #e0d9c8; border-radius: 10px; margin-bottom: 20px; padding: 4px; width: 100%; max-width: 400px; margin-inline: auto; }
         .sem-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: transparent; }
         .sem-btn.active { background: var(--primary-bg); color: var(--accent-gold); }
 
-        /* النوافذ */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-card { background: #fff; width: 100%; max-width: 500px; border-radius: 15px; padding: 25px; border-top: 10px solid var(--accent-gold); text-align: center; }
-        .video-box { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 3px solid var(--accent-gold); }
+        /* زر التعريف العائم: تم رفعه ليكون فوق الشريط الثابت */
+        .floating-info { 
+            position: fixed; 
+            bottom: 75px; 
+            left: 20px; 
+            padding: 0 15px; 
+            height: 40px; 
+            background: var(--accent-gold); 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 13px; 
+            cursor: pointer; 
+            z-index: 4000; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+            color: #000; 
+        }
 
-        /* زر تعريف المنصة الجديد */
-        .floating-info { position: fixed; bottom: 80px; left: 20px; padding: 0 15px; height: 45px; background: var(--accent-gold); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; cursor: pointer; z-index: 4000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: #000; }
-
-        /* تعديل الفوتر ليكون شريطاً سفلياً احترافياً */
+        /* تعديل الشريط السفلي ليكون مثبتاً دائماً Fixed */
         .app-footer { 
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             background: #000; 
             color: var(--accent-gold); 
             text-align: center; 
-            padding: 12px 10px; 
+            padding: 10px 5px; 
             font-size: 11px; 
             border-top: 2px solid var(--accent-gold); 
-            flex-shrink: 0; /* يمنع الفوتر من الاختفاء عند صغر الشاشة */
-            z-index: 2000;
-            line-height: 1.6;
+            z-index: 5000; /* أعلى من كل العناصر */
+            line-height: 1.5;
         }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 7000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: #fff; width: 100%; max-width: 500px; border-radius: 15px; padding: 25px; border-top: 10px solid var(--accent-gold); text-align: center; }
+        .video-box { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 3px solid var(--accent-gold); }
 
         @media (max-width: 992px) {
             .desktop-sidebar { display: none; }
             .mobile-tabs { display: flex; }
-            .app-title { font-size: 1.1rem; }
-            .floating-info { bottom: 90px; } /* رفع الزر قليلاً في الموبايل */
+            .app-title { font-size: 1rem; }
         }
     </style>
 </head>
@@ -101,7 +116,7 @@
                 <div style="color: #fff; font-size: 9px; line-height: 1.2;">مدرسة المروج<br><span style="color:var(--accent-gold)">للتعليم الأساسي</span></div>
             </div>
             <div class="app-title">مُصحَف المُرُوج الرَّقمِي</div>
-            <div style="width:45px"></div>
+            <div style="width:40px"></div>
         </header>
         <div class="mobile-tabs" id="mobile-grades"></div>
     </div>
@@ -117,18 +132,18 @@
         </section>
     </main>
 
-    <div class="floating-info" onclick="toggleModal('info-modal', true)">تعريف بالمنصة ؟</div>
+    <div class="floating-info" onclick="toggleModal('info-modal', true)">؟</div>
 
     <footer class="app-footer">
-        <div>جميع الحقوق محفوظة لمدرسة المروج © 2025م</div>
-        <div style="letter-spacing: 0.5px; opacity: 0.9;">تطوير وبرمجة: أ. فيصل العريبي</div>
+        جميع الحقوق محفوظة لمدرسة المروج © 2025م <br> 
+        تطوير وبرمجة: أ. فيصل العريبي
     </footer>
 
     <div class="overlay" id="info-modal">
         <div class="modal-card">
             <h2 style="color: var(--primary-bg); font-family: 'Amiri'; margin-bottom: 10px;">۞ تعريف المنصة</h2>
             <p style="margin: 15px 0; line-height: 1.7; text-align: justify; font-size: 14px;">
-                مرحباً بكم في <b>مُصحَف المُرُوج الرَّقمِي</b>، منصة تعليمية رائدة مخصصة لطلاب مدرسة المروج بمحافظة ظفار. تهدف المنصة إلى تيسير حفظ وتلاوة السور المقررة في مادة التربية الإسلامية من خلال توفير تلاوات تعليمية مرئية بجودة عالية، مرتبة حسب الصفوف والفصول الدراسية، لتمكين الطالب من الإتقان والتعلم الذاتي بكل سهولة.
+                مرحباً بكم في <b>مُصحَف المُرُوج الرَّقمِي</b>، منصة تعليمية رائدة مخصصة لطلاب مدرسة المروج بمحافظة ظفار. تهدف المنصة إلى تيسير حفظ وتلاوة السور المقررة في مادة التربية الإسلامية.
             </p>
             <button onclick="toggleModal('info-modal', false)" style="width:100%; padding:12px; background:var(--primary-bg); color:var(--accent-gold); border:none; border-radius:8px; cursor:pointer; font-weight:bold;">العودة للمنصة</button>
         </div>
@@ -184,7 +199,7 @@
             const grid = document.getElementById('grid'); grid.innerHTML = '';
             const items = (db[currentG] && db[currentG][currentS]) || [];
             if(items.length === 0) {
-                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px; color:#888;">لا توجد سور مضافة حالياً لهذا الفصل.</p>';
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px; color:#888;">لا توجد سور مضافة حالياً.</p>';
                 return;
             }
             items.forEach(i => {
@@ -196,26 +211,18 @@
             const videoContainer = document.getElementById('video-container');
             let videoUrl = v.trim();
             let htmlContent = '';
-
             if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-                let videoId = '';
-                if (videoUrl.includes('v=')) {
-                    videoId = videoUrl.split('v=')[1].split('&')[0];
-                } else {
-                    videoId = videoUrl.split('/').pop();
-                }
-                htmlContent = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                let videoId = videoUrl.includes('v=') ? videoUrl.split('v=')[1].split('&')[0] : videoUrl.split('/').pop();
+                htmlContent = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
             } else {
                 let finalUrl = videoUrl.startsWith('http') ? videoUrl : `https://ict.moe.gov.om/tlawti/video/${videoUrl}`;
-                htmlContent = `<video controls autoplay playsinline style="width:100%; height:100%;"><source src="${finalUrl}" type="video/mp4">عذراً، متصفحك لا يدعم تشغيل هذا الفيديو.</video>`;
+                htmlContent = `<video controls autoplay playsinline style="width:100%; height:100%;"><source src="${finalUrl}" type="video/mp4">عذراً، متصفحك لا يدعم التشغيل.</video>`;
             }
-
             videoContainer.innerHTML = htmlContent;
             document.getElementById('video-overlay').style.display = 'flex';
         }
         function closeVideo() { document.getElementById('video-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; }
         function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
-
         init();
     </script>
 </body>
