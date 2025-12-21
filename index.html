@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>منصة المروج | أ. فيصل العريبي</title>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@500;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-bg: #041a11;
+            --header-gradient: linear-gradient(180deg, #0b422a 0%, #062b1b 100%);
+            --accent-gold: #c4a04d;
+            --app-body-bg: #fdfaf1;
+            --sidebar-width: 280px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--primary-bg);
+            font-family: 'Tajawal', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* الهيدر */
+        .app-header { width: 100%; z-index: 2000; flex-shrink: 0; }
+        .gov-bar { background: #000; color: #fff; text-align: center; padding: 6px; font-size: 10px; border-bottom: 1px solid var(--accent-gold); font-weight: bold; }
+        .main-nav { background: var(--header-gradient); padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent-gold); }
+        .brand img { width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid var(--accent-gold); background: #fff; }
+        .app-title { font-family: 'Amiri', serif; color: var(--accent-gold); font-size: 1.3rem; }
+
+        .main-layout { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+        /* القوائم */
+        .desktop-sidebar { width: var(--sidebar-width); background: #062b1b; border-left: 2px solid var(--accent-gold); padding: 20px 10px; overflow-y: auto; }
+        .mobile-tabs { display: none; background: #062b1b; padding: 10px; gap: 10px; overflow-x: auto; border-bottom: 2px solid var(--accent-gold); }
+
+        /* المحتوى */
+        .content-area { flex: 1; overflow-y: auto; background: var(--app-body-bg); padding: 20px; padding-bottom: 120px; }
+
+        #loader { position: absolute; inset: 0; background: var(--app-body-bg); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .grade-item { padding: 12px; margin-bottom: 8px; background: rgba(255,255,255,0.05); color: #fff; border-radius: 10px; cursor: pointer; text-align: center; transition: 0.3s; border: 1px solid transparent; }
+        .grade-item.active { background: var(--accent-gold); color: #000; font-weight: bold; border-color: #fff; }
+
+        .surah-card { background: #fff; padding: 25px; text-align: center; border: 4px double var(--accent-gold); border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .surah-card:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        .sem-switcher { display: flex; background: #e0d9c8; border-radius: 10px; margin-bottom: 20px; padding: 4px; width: 100%; max-width: 400px; margin-inline: auto; }
+        .sem-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: transparent; }
+        .sem-btn.active { background: var(--primary-bg); color: var(--accent-gold); }
+
+        /* النوافذ */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: #fff; width: 100%; max-width: 500px; border-radius: 15px; padding: 25px; border-top: 10px solid var(--accent-gold); text-align: center; }
+        .video-box { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 3px solid var(--accent-gold); }
+
+        /* زر تعريف المنصة الجديد */
+        .floating-info { position: fixed; bottom: 80px; left: 20px; padding: 0 15px; height: 45px; background: var(--accent-gold); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; cursor: pointer; z-index: 4000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: #000; }
+
+        /* تعديل الفوتر ليكون شريطاً سفلياً احترافياً */
+        .app-footer { 
+            background: #000; 
+            color: var(--accent-gold); 
+            text-align: center; 
+            padding: 12px 10px; 
+            font-size: 11px; 
+            border-top: 2px solid var(--accent-gold); 
+            flex-shrink: 0; /* يمنع الفوتر من الاختفاء عند صغر الشاشة */
+            z-index: 2000;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 992px) {
+            .desktop-sidebar { display: none; }
+            .mobile-tabs { display: flex; }
+            .app-title { font-size: 1.1rem; }
+            .floating-info { bottom: 90px; } /* رفع الزر قليلاً في الموبايل */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader"><div class="spinner"></div><p>جاري تحميل منصة مدرسة المروج...</p></div>
+
+    <div class="app-header">
+        <div class="gov-bar">سلطنة عمان - وزارة التربية والتعليم - محافظة ظفار</div>
+        <header class="main-nav">
+            <div class="brand" style="display:flex; align-items:center; gap:10px;">
+                <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png">
+                <div style="color: #fff; font-size: 9px; line-height: 1.2;">مدرسة المروج<br><span style="color:var(--accent-gold)">للتعليم الأساسي</span></div>
+            </div>
+            <div class="app-title">مُصحَف المُرُوج الرَّقمِي</div>
+            <div style="width:45px"></div>
+        </header>
+        <div class="mobile-tabs" id="mobile-grades"></div>
+    </div>
+
+    <main class="main-layout">
+        <aside class="desktop-sidebar" id="pc-grades"></aside>
+        <section class="content-area">
+            <div class="sem-switcher">
+                <button class="sem-btn" id="btn-s1" onclick="updateSem(1)">الفصل الأول</button>
+                <button class="sem-btn" id="btn-s2" onclick="updateSem(2)">الفصل الثاني</button>
+            </div>
+            <div id="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;"></div>
+        </section>
+    </main>
+
+    <div class="floating-info" onclick="toggleModal('info-modal', true)">تعريف بالمنصة ؟</div>
+
+    <footer class="app-footer">
+        <div>جميع الحقوق محفوظة لمدرسة المروج © 2025م</div>
+        <div style="letter-spacing: 0.5px; opacity: 0.9;">تطوير وبرمجة: أ. فيصل العريبي</div>
+    </footer>
+
+    <div class="overlay" id="info-modal">
+        <div class="modal-card">
+            <h2 style="color: var(--primary-bg); font-family: 'Amiri'; margin-bottom: 10px;">۞ تعريف المنصة</h2>
+            <p style="margin: 15px 0; line-height: 1.7; text-align: justify; font-size: 14px;">
+                مرحباً بكم في <b>مُصحَف المُرُوج الرَّقمِي</b>، منصة تعليمية رائدة مخصصة لطلاب مدرسة المروج بمحافظة ظفار. تهدف المنصة إلى تيسير حفظ وتلاوة السور المقررة في مادة التربية الإسلامية من خلال توفير تلاوات تعليمية مرئية بجودة عالية، مرتبة حسب الصفوف والفصول الدراسية، لتمكين الطالب من الإتقان والتعلم الذاتي بكل سهولة.
+            </p>
+            <button onclick="toggleModal('info-modal', false)" style="width:100%; padding:12px; background:var(--primary-bg); color:var(--accent-gold); border:none; border-radius:8px; cursor:pointer; font-weight:bold;">العودة للمنصة</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="video-overlay" style="flex-direction: column;">
+        <button onclick="closeVideo()" style="margin-bottom:10px; padding:10px 25px; background:var(--accent-gold); border:none; border-radius:25px; font-weight:bold; cursor:pointer;">إغلاق المشغل ✕</button>
+        <div class="video-box" id="video-container"></div>
+    </div>
+
+    <script>
+        const SB_URL = 'https://vchzkeebmjqiohgoknnm.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        let db = {}, currentG = localStorage.getItem('g') || "الصف الخامس", currentS = parseInt(localStorage.getItem('s')) || 1;
+
+        async function init() {
+            try {
+                const { data, error } = await _supabase.from('surahs').select('*');
+                if (error) throw error;
+                data.forEach(r => {
+                    if (!db[r.grade]) db[r.grade] = { 1: [], 2: [] };
+                    db[r.grade][r.semester].push({ t: r.title, v: r.video_path });
+                });
+                renderUI();
+                document.getElementById('loader').style.display = 'none';
+            } catch (e) { console.error(e); }
+        }
+
+        function renderUI() {
+            const pc = document.getElementById('pc-grades'), mb = document.getElementById('mobile-grades');
+            pc.innerHTML = ''; mb.innerHTML = '';
+            ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"].forEach(g => {
+                if(db[g]) {
+                    const html = `<div class="grade-item ${g===currentG?'active':''}" onclick="updateGrade('${g}')">${g}</div>`;
+                    pc.insertAdjacentHTML('beforeend', html);
+                    mb.insertAdjacentHTML('beforeend', html);
+                }
+            });
+            updateSem(currentS);
+        }
+
+        function updateGrade(g) { currentG = g; localStorage.setItem('g', g); renderUI(); renderGrid(); }
+        function updateSem(s) { 
+            currentS = s; localStorage.setItem('s', s);
+            document.getElementById('btn-s1').className = `sem-btn ${s===1?'active':''}`;
+            document.getElementById('btn-s2').className = `sem-btn ${s===2?'active':''}`;
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('grid'); grid.innerHTML = '';
+            const items = (db[currentG] && db[currentG][currentS]) || [];
+            if(items.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px; color:#888;">لا توجد سور مضافة حالياً لهذا الفصل.</p>';
+                return;
+            }
+            items.forEach(i => {
+                grid.innerHTML += `<div class="surah-card" onclick="playVideo('${i.v}')"><h3>${i.t}</h3><p style="color:var(--accent-gold); font-size:12px; margin-top:5px;">۞ تلاوة تعليمية ۞</p></div>`;
+            });
+        }
+
+        function playVideo(v) {
+            const videoContainer = document.getElementById('video-container');
+            let videoUrl = v.trim();
+            let htmlContent = '';
+
+            if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+                let videoId = '';
+                if (videoUrl.includes('v=')) {
+                    videoId = videoUrl.split('v=')[1].split('&')[0];
+                } else {
+                    videoId = videoUrl.split('/').pop();
+                }
+                htmlContent = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            } else {
+                let finalUrl = videoUrl.startsWith('http') ? videoUrl : `https://ict.moe.gov.om/tlawti/video/${videoUrl}`;
+                htmlContent = `<video controls autoplay playsinline style="width:100%; height:100%;"><source src="${finalUrl}" type="video/mp4">عذراً، متصفحك لا يدعم تشغيل هذا الفيديو.</video>`;
+            }
+
+            videoContainer.innerHTML = htmlContent;
+            document.getElementById('video-overlay').style.display = 'flex';
+        }
+        function closeVideo() { document.getElementById('video-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; }
+        function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
+
+        init();
+    </script>
+</body>
+</html>
