@@ -12,16 +12,15 @@
         
         body { background: var(--primary); font-family: 'Tajawal', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* الأشرطة الرسمية */
         .official-bar { background: #000; color: var(--accent); text-align: center; padding: 6px; font-size: 10px; font-weight: bold; border-bottom: 1px solid var(--accent); z-index: 1001; }
         footer.official-bar { position: fixed; bottom: 0; width: 100%; border-top: 1px solid var(--accent); border-bottom: none; }
 
         .main-header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
 
-        /* الهيكل الرئيسي مع الشريط الجانبي */
         .app-container { display: flex; flex: 1; overflow: hidden; }
 
+        /* الشريط الجانبي */
         .sidebar { 
             width: 240px; 
             background: var(--sidebar-bg); 
@@ -29,7 +28,7 @@
             overflow-y: auto; 
             display: flex; 
             flex-direction: column;
-            padding: 15px 0;
+            padding: 10px 0;
             transition: 0.3s;
         }
 
@@ -37,23 +36,31 @@
             padding: 15px 20px;
             color: #fff;
             cursor: pointer;
-            border-bottom: 1px solid rgba(196,160,77,0.1);
+            border-bottom: 1px solid rgba(196,160,77,0.05);
             font-weight: bold;
             transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: b;
         }
-        .grade-item:hover { background: rgba(196,160,77,0.1); }
         .grade-item.active { background: var(--accent); color: var(--primary); }
+
+        /* زر تعريف المنصة الجديد في الشريط الجانبي */
+        .about-sidebar-btn {
+            margin-top: auto;
+            padding: 20px;
+            background: rgba(196,160,77,0.1);
+            color: var(--gold);
+            text-align: center;
+            cursor: pointer;
+            font-weight: 900;
+            border-top: 1px solid var(--accent);
+            transition: 0.3s;
+        }
+        .about-sidebar-btn:hover { background: var(--accent); color: var(--primary); }
 
         .main-content { flex: 1; overflow-y: auto; background: var(--bg); padding: 20px; padding-bottom: 80px; }
 
-        /* التحدي اليومي */
         .challenge-box { background: #000; border: 2px solid var(--accent); border-radius: 12px; padding: 15px; margin-bottom: 20px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
         .challenge-info h4 { color: var(--accent); font-size: 0.8rem; }
         
-        /* الفصول الدراسية */
         .sem-toggle { display: flex; background: #e2dbc9; padding: 4px; border-radius: 50px; max-width: 350px; margin: 0 auto 20px; border: 1px solid var(--accent); }
         .sem-btn { flex: 1; padding: 10px; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; }
         .sem-btn.active { background: var(--primary); color: var(--accent); }
@@ -64,19 +71,16 @@
         /* مشغل الفيديو والرقابة */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 5000; display: none; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
         .video-wrap { width: 100%; max-width: 650px; position: relative; }
-        video { width: 100%; border-radius: 12px; border: 2px solid var(--accent); }
+        video { width: 100%; border-radius: 12px; border: 2px solid var(--accent); background: #000; }
         
         .progress-ui { width: 100%; background: #1a1a1a; border-radius: 10px; margin-top: 15px; padding: 12px; border: 1px solid var(--accent); display: none; }
         .progress-bar { height: 12px; background: #333; border-radius: 6px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.4s; }
 
-        /* زر التعريف للهاتف */
-        .btn-about { position: fixed; bottom: 70px; left: 20px; width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; border: 2px solid #fff; z-index: 400; }
-
         @media (max-width: 768px) {
-            .sidebar { width: 120px; font-size: 0.8rem; }
-            .grade-item { padding: 12px 10px; text-align: center; }
-            .app-name { font-size: 1rem !important; }
+            .sidebar { width: 110px; font-size: 0.75rem; }
+            .grade-item { padding: 12px 10px; }
+            .about-sidebar-btn { padding: 15px 5px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -89,12 +93,15 @@
             <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" class="logo-img">
             <h2 style="color:var(--accent); font-size:0.9rem;">مدرسة المروج</h2>
         </div>
-        <h1 class="app-name" style="color:var(--accent); font-family:'Amiri'; font-size:1.5rem;">مُصحَف المُرُوج</h1>
+        <h1 style="color:var(--accent); font-family:'Amiri'; font-size:1.5rem;">مُصحَف المُرُوج</h1>
         <div style="width:40px"></div>
     </header>
 
     <div class="app-container">
-        <aside class="sidebar" id="sidebar-nav"></aside>
+        <aside class="sidebar">
+            <div id="sidebar-nav" style="flex:1"></div>
+            <div class="about-sidebar-btn" onclick="togglePop('about-pop', true)">۞ تعريف المنصة</div>
+        </aside>
 
         <main class="main-content">
             <div class="challenge-box">
@@ -115,6 +122,18 @@
         </main>
     </div>
 
+    <div class="overlay" id="about-pop">
+        <div style="background:var(--primary); border:3px double var(--accent); padding:30px; border-radius:20px; text-align:center; color:#fff; width:90%; max-width:400px;">
+            <h2 style="color:var(--accent); font-family:'Amiri'; margin-bottom:15px;">تعريف المنصة</h2>
+            <p style="font-size:0.95rem; line-height:1.8; margin-bottom:20px;">
+                <b>مُصحَف المُرُوج الرَّقمِي</b><br>
+                منصة تعليمية تفاعلية تهدف إلى تسهيل حفظ وتلاوة القرآن الكريم لطلاب مدرسة المروج عبر تقنيات حديثة ونظام تحديات يومي.<br><br>
+                إشراف وتطوير الأستاذ: <b>فيصل العريبي</b>
+            </p>
+            <button onclick="togglePop('about-pop', false)" style="width:100%; padding:12px; background:var(--accent); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">إغلاق</button>
+        </div>
+    </div>
+
     <div class="overlay" id="confirm-pop">
         <div style="background:var(--primary); border:2px solid var(--accent); padding:25px; border-radius:20px; text-align:center; color:#fff; width:90%; max-width:350px;">
             <h3 style="color:var(--accent); margin-bottom:15px;">قوانين التحدي</h3>
@@ -133,11 +152,10 @@
                     <span>نسبة إنجاز التحدي</span>
                 </div>
             </div>
-            <button onclick="closeVideo()" class="btn-close" style="width:100%; margin-top:15px; padding:12px; background:var(--accent); border:none; border-radius:10px; font-weight:bold;">إغلاق</button>
+            <button onclick="closeVideo()" style="width:100%; margin-top:15px; padding:12px; background:var(--accent); border:none; border-radius:10px; font-weight:bold;">إغلاق</button>
         </div>
     </div>
 
-    <div class="btn-about" onclick="togglePop('about-pop', true)">۞</div>
     <footer class="official-bar">وزارة التربية والتعليم - مدرسة المروج</footer>
 
     <script>
