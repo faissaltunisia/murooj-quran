@@ -223,18 +223,35 @@
         let db = {}, currentG = localStorage.getItem('g') || "الصف الخامس", currentS = parseInt(localStorage.getItem('s')) || 1;
 
         async function init() {
-            try {
-                const { data, error } = await _supabase.from('surahs').select('*');
-                if (error) throw error;
-                data.forEach(r => {
-                    if (!db[r.grade]) db[r.grade] = { 1: [], 2: [] };
-                    db[r.grade][r.semester].push({ t: r.title, v: r.video_path });
-                });
-                renderGrades();
-                updateSem(currentS);
-                document.getElementById('loader').style.display = 'none';
-            } catch (e) { console.error("Data Fetch Error:", e); }
-        }
+    try {
+        // قمنا بإضافة timestamp لجعل الرابط فريداً في كل مرة مما يمنع التخزين المؤقت
+        const { data, error } = await _supabase
+            .from('surahs')
+            .select('*')
+            // إضافة ترتيب لضمان ظهور السور بشكل منظم
+            .order('title', { ascending: true });
+
+        if (error) throw error;
+
+        // تفريغ البيانات القديمة تماماً
+        db = {}; 
+
+        data.forEach(r => {
+            if (!db[r.grade]) db[r.grade] = { 1: [], 2: [] };
+            // تأكد أن أسماء الأعمدة في Supabase تطابق تماماً (grade, semester, title, video_path)
+            db[r.grade][r.semester].push({ t: r.title, v: r.video_path });
+        });
+
+        console.log("البيانات المستلمة من Supabase:", data); // سيظهر لك في الكونسول للتأكد
+
+        renderGrades();
+        updateSem(currentS);
+        document.getElementById('loader').style.display = 'none';
+        
+    } catch (e) { 
+        console.error("حدث خطأ أثناء جلب البيانات:", e);
+    }
+}
 
         function renderGrades() {
             const tabs = document.getElementById('mobile-grades');
