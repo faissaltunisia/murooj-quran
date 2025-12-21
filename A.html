@@ -11,6 +11,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); font-family: 'Tajawal', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
+        /* الهيدر */
         .main-header {
             background: linear-gradient(135deg, #0b422a 0%, #041a11 100%);
             border-bottom: 3px solid var(--gold);
@@ -18,7 +19,6 @@
             display: flex; align-items: center; justify-content: space-between;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100;
         }
-
         .school-info { display: flex; align-items: center; gap: 15px; }
         .school-logo { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; padding: 2px; box-shadow: 0 0 10px var(--gold); }
         .school-name-text { color: #fff; line-height: 1.3; }
@@ -26,9 +26,20 @@
         .school-name-text h2 { font-size: 1.1rem; color: var(--gold-light); font-weight: 900; }
         .app-main-title { font-family: 'Amiri', serif; color: var(--gold); font-size: 1.8rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
 
+        /* التصميم الرئيسي */
         .main-layout { display: flex; flex: 1; overflow: hidden; }
         .sidebar { width: 280px; background: #062b1b; border-left: 2px solid var(--gold); overflow-y: auto; padding: 20px 10px; display: flex; flex-direction: column; gap: 10px; }
         .mobile-nav { display: none; background: #062b1b; padding: 10px; overflow-x: auto; border-bottom: 2px solid var(--gold); gap: 10px; }
+
+        /* زر تعريف المنصة الجديد */
+        .about-trigger-btn {
+            background: linear-gradient(45deg, #8a6d29, var(--gold), #8a6d29);
+            color: #000; border: 2px solid #fff; padding: 15px;
+            border-radius: 12px; cursor: pointer; text-align: center;
+            font-weight: 900; font-size: 1.1rem; margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s;
+        }
+        .about-trigger-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
 
         .grade-card { padding: 15px; background: rgba(255,255,255,0.05); color: #fff; border-radius: 12px; cursor: pointer; text-align: center; border: 1px solid rgba(196, 160, 77, 0.2); transition: 0.3s; font-weight: bold; }
         .grade-card.active { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
@@ -41,25 +52,24 @@
         .surah-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         .surah-item { background: #fff; border: 2px solid var(--gold); border-radius: 15px; padding: 25px 15px; text-align: center; cursor: pointer; }
 
-        /* تعديلات المشغل */
+        /* نافذة التعريف الذهبية المزدوجة */
+        .about-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 4000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .about-box { 
+            background: var(--bg); border: 6px double var(--gold); 
+            padding: 40px 30px; border-radius: 25px; max-width: 550px; 
+            text-align: center; color: #fff; box-shadow: 0 0 50px var(--gold);
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .about-box h2 { color: var(--gold); font-family: 'Amiri'; margin-bottom: 25px; font-size: 2.2rem; border-bottom: 1px solid var(--gold); display: inline-block; padding-bottom: 10px; }
+        .about-box p { font-size: 1.2rem; line-height: 1.8; margin-bottom: 15px; }
+
+        /* المشغل */
         .player-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; display: none; align-items: center; justify-content: center; flex-direction: column; }
-        
-        .gold-frame { 
-            width: 90%; max-width: 800px; aspect-ratio: 16/9; 
-            background: #000; border: 5px solid var(--gold); 
-            box-shadow: 0 0 20px var(--gold); border-radius: 10px; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .gold-frame { width: 90%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 5px solid var(--gold); box-shadow: 0 0 25px var(--gold); border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .close-btn-center { margin-top: 25px; background: var(--gold); color: #000; border: none; padding: 12px 50px; border-radius: 50px; font-weight: 900; cursor: pointer; font-family: 'Tajawal'; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        .close-btn-bottom {
-            margin-top: 20px; background: var(--gold); color: #000; 
-            border: none; padding: 10px 40px; border-radius: 20px; 
-            font-weight: bold; cursor: pointer; font-family: 'Tajawal';
-        }
-
-        .info-trigger { position: fixed; bottom: 80px; left: 30px; width: 55px; height: 55px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 25px; cursor: pointer; z-index: 1000; }
-
-        @media (max-width: 992px) { .sidebar { display: none; } .mobile-nav { display: flex; } .app-main-title { font-size: 1.2rem; } }
+        @media (max-width: 992px) { .sidebar { display: none; } .mobile-nav { display: flex; } .app-main-title { font-size: 1.1rem; } }
     </style>
 </head>
 <body>
@@ -73,13 +83,20 @@
             </div>
         </div>
         <h1 class="app-main-title">مُصحَف المُرُوج الرَّقمِي</h1>
-        <div style="width: 50px;"></div>
+        <div style="width: 40px;"></div>
     </header>
 
-    <nav class="mobile-nav" id="m-nav"></nav>
+    <nav class="mobile-nav" id="m-nav">
+        <div class="about-trigger-btn" onclick="toggleAbout(true)">۞ تعريف المنصة ۞</div>
+    </nav>
 
     <div class="main-layout">
-        <aside class="sidebar" id="p-nav"></aside>
+        <aside class="sidebar">
+            <div class="about-trigger-btn" onclick="toggleAbout(true)">۞ تعريف المنصة ۞</div>
+            <hr style="border-color: rgba(196,160,77,0.3); margin-bottom:10px;">
+            <div id="p-nav" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </aside>
+        
         <main class="content">
             <div class="sem-toggle">
                 <button id="s1" class="active" onclick="setSem(1)">الفصل الدراسي الأول</button>
@@ -89,11 +106,21 @@
         </main>
     </div>
 
-    <div class="info-trigger" onclick="alert('مُصحَف المُرُوج الرَّقمِي\nإعداد وتطوير أ. فيصل العريبي')">؟</div>
+    <div class="about-overlay" id="about-pop">
+        <div class="about-box">
+            <h2>تعريف المنصة</h2>
+            <p>۞ <b>مُصحَف المُرُوج الرَّقمِي</b> ۞</p>
+            <p>منصة تعليمية مبتكرة صُممت خصيصاً لطلاب مدرسة المروج بمحافظة ظفار، تهدف إلى تيسير حفظ وتلاوة سور القرآن الكريم المقررة ضمن المنهج الدراسي بطريقة تفاعلية حديثة.</p>
+            <p style="color: var(--gold-light); margin-top:20px; border-top: 1px dashed var(--gold); padding-top: 15px;">
+                إعداد وتطوير الأستاذ القدير:<br><b style="font-size: 1.5rem;">فيصل العريبي</b>
+            </p>
+            <button class="close-btn-center" onclick="toggleAbout(false)">إغلاق النافذة</button>
+        </div>
+    </div>
 
     <div class="player-overlay" id="video-layer">
         <div class="gold-frame" id="video-wrap"></div>
-        <button class="close-btn-bottom" onclick="closeVideo()">إغلاق ✕</button>
+        <button class="close-btn-center" onclick="closeVideo()">إغلاق الفيديو ✕</button>
     </div>
 
     <footer style="position:fixed; bottom:0; width:100%; background:#000; color:var(--gold); text-align:center; padding:10px; font-size:11px; border-top:1px solid var(--gold);">
@@ -116,7 +143,10 @@
         function renderMenu() {
             const grades = ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"];
             const p = document.getElementById('p-nav'), m = document.getElementById('m-nav');
-            p.innerHTML = ''; m.innerHTML = '';
+            p.innerHTML = '';
+            // للهاتف نحافظ على زر التعريف أولاً
+            m.innerHTML = '<div class="about-trigger-btn" onclick="toggleAbout(true)">۞ تعريف المنصة ۞</div>';
+            
             grades.forEach(g => {
                 const btn = `<div class="grade-card ${g===grade?'active':''}" onclick="setGrade('${g}')">${g}</div>`;
                 p.insertAdjacentHTML('beforeend', btn);
@@ -145,7 +175,6 @@
             const wrap = document.getElementById('video-wrap');
             document.getElementById('video-layer').style.display = 'flex';
             let url = path.includes('http') ? path : `https://ict.moe.gov.om/tlawti/video/${path}`;
-            
             if(url.includes('youtube')) {
                 let id = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
                 wrap.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
@@ -156,6 +185,7 @@
         }
 
         function closeVideo() { document.getElementById('video-layer').style.display = 'none'; document.getElementById('video-wrap').innerHTML = ''; }
+        function toggleAbout(show) { document.getElementById('about-pop').style.display = show ? 'flex' : 'none'; }
         init();
     </script>
 </body>
