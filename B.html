@@ -6,22 +6,22 @@
     <title>منصة المروج | أ. فيصل العريبي</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-blue: #1a4a9c; /* اللون الأزرق من الصورة */
-            --bg-light: #f4f7fa;
+            --primary-green: #041a11;
+            --header-gradient: linear-gradient(180deg, #0b422a 0%, #062b1b 100%);
             --accent-gold: #c4a04d;
+            --app-body-bg: #fdfaf1;
             --white: #ffffff;
-            --text-dark: #333;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background-color: var(--bg-light);
+            background-color: var(--primary-green);
             font-family: 'Tajawal', sans-serif;
             height: 100vh;
             overflow: hidden;
@@ -29,68 +29,61 @@
             flex-direction: column;
         }
 
-        /* الهيدر العلوي المستوحى من الصورة */
-        .app-header { 
-            background: linear-gradient(180deg, #103067 0%, var(--primary-blue) 100%);
-            padding: 15px 20px;
-            color: white;
+        /* الهيدر العلوي */
+        .app-header { width: 100%; z-index: 2000; flex-shrink: 0; }
+        .gov-bar { background: #000; color: #fff; text-align: center; padding: 4px; font-size: 9px; border-bottom: 1px solid var(--accent-gold); }
+        
+        .main-nav { 
+            background: var(--header-gradient); 
+            padding: 12px 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 2px solid var(--accent-gold);
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
-            flex-shrink: 0;
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logo-area { font-weight: 800; font-size: 20px; letter-spacing: 1px; }
-        .header-icons { display: flex; gap: 15px; font-size: 18px; }
+        
+        .brand { display: flex; align-items: center; gap: 8px; }
+        .brand img { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--accent-gold); background: #fff; }
+        .app-title { font-family: 'Amiri', serif; color: var(--accent-gold); font-size: 1.1rem; }
 
-        .promo-banner {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .promo-btn {
-            background: white;
-            color: var(--primary-blue);
-            padding: 6px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 13px;
-            border: none;
-        }
-
-        /* القوائم الجانبية والعلوية */
+        /* شريط الصفوف (التبويبات) */
         .mobile-tabs { 
             display: flex; 
-            padding: 10px; 
+            background: var(--primary-green);
+            padding: 12px 10px; 
             gap: 10px; 
             overflow-x: auto; 
             white-space: nowrap;
-            -ms-overflow-style: none; scrollbar-width: none;
+            scrollbar-width: none;
         }
         .mobile-tabs::-webkit-scrollbar { display: none; }
 
         .grade-item {
-            padding: 8px 18px;
-            background: white;
-            color: var(--primary-blue);
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-radius: 25px;
+            font-size: 12px;
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(196, 160, 77, 0.3);
+            transition: 0.3s;
         }
-        .grade-item.active { background: var(--primary-blue); color: white; }
+        .grade-item.active { background: var(--accent-gold); color: #000; border-color: #fff; }
 
         /* منطقة المحتوى */
         .content-area { 
             flex: 1; 
             overflow-y: auto; 
+            background: var(--app-body-bg); 
             padding: 15px; 
-            padding-bottom: 100px; /* مساحة للبار السفلي */
+            padding-bottom: 120px;
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
         }
 
-        /* تصميم الكروت المستوحى من الصورة (عمودين) */
+        /* شبكة السور (عمودين) */
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -99,32 +92,33 @@
 
         .surah-card {
             background: var(--white);
-            border-radius: 15px;
+            border-radius: 18px;
             padding: 20px 10px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: 0.3s;
-            border: 1px solid #eee;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e0d9c8;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            cursor: pointer;
         }
-        .surah-card i { font-size: 30px; color: var(--primary-blue); opacity: 0.8; }
-        .surah-card h3 { font-size: 14px; color: var(--text-dark); }
+        .surah-card i { font-size: 28px; color: var(--primary-green); opacity: 0.9; }
+        .surah-card h3 { font-size: 13px; color: #041a11; font-weight: 800; }
+        .surah-card p { font-size: 10px; color: var(--accent-gold); font-weight: bold; }
 
-        /* شريط التنقل السفلي الاحترافي - مطابق للصورة */
+        /* شريط التنقل السفلي الاحترافي - ثابت */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: white;
-            height: 70px;
+            background: var(--primary-green);
+            height: 75px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border-top: 1px solid #eee;
+            border-top: 2px solid var(--accent-gold);
             z-index: 5000;
             padding-bottom: env(safe-area-inset-bottom);
         }
@@ -133,58 +127,61 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #888;
-            font-size: 11px;
+            gap: 5px;
+            color: rgba(255,255,255,0.6);
+            font-size: 10px;
             flex: 1;
         }
-        .nav-item.active { color: var(--primary-blue); }
-        .nav-item i { font-size: 20px; }
+        .nav-item.active { color: var(--accent-gold); }
+        .nav-item i { font-size: 18px; }
 
-        /* الزر الأوسط البارز (+) */
+        /* الزر الأوسط الذهبي البارز */
         .nav-center {
             position: relative;
-            top: -20px;
-            background: var(--primary-blue);
-            width: 55px;
-            height: 55px;
+            top: -22px;
+            background: var(--accent-gold);
+            width: 58px;
+            height: 58px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--primary-green);
             font-size: 24px;
-            box-shadow: 0 4px 15px rgba(26, 74, 156, 0.4);
-            border: 4px solid white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border: 4px solid var(--app-body-bg);
         }
 
-        /* اللودر والنوافذ */
-        #loader { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 7000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .video-box { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border-radius: 10px; overflow: hidden; }
+        /* النوافذ واللودر */
+        #loader { position: fixed; inset: 0; background: var(--app-body-bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 7000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .video-box { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--accent-gold); border-radius: 12px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <div id="loader"><p>جاري التحميل...</p></div>
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top:15px; font-weight:bold; color:var(--primary-green);">مُصحَف المُرُوج الرَّقمِي...</p>
+    </div>
 
-    <header class="app-header">
-        <div class="header-top">
-            <div class="logo-area">مصحف المروج</div>
-            <div class="header-icons">
-                <i class="far fa-question-circle"></i>
-                <i class="far fa-bell"></i>
-                <div style="font-size: 12px; border: 1px solid white; padding: 2px 8px; border-radius: 10px;">عمان 🇴🇲</div>
+    <div class="app-header">
+        <div class="gov-bar">سلطنة عمان - وزارة التربية والتعليم - محافظة ظفار</div>
+        <header class="main-nav">
+            <div class="brand">
+                <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png">
+                <div style="color: #fff; font-size: 9px; line-height: 1.2;">مدرسة المروج<br><span style="color:var(--accent-gold)">للتعليم الأساسي</span></div>
             </div>
-        </div>
-        <div class="promo-banner">
-            <div style="font-size: 14px; font-weight: bold;">تلاوات تعليمية مختارة</div>
-            <button class="promo-btn" onclick="toggleModal('info-modal', true)">تعريف بالمنصة</button>
-        </div>
-    </header>
-
-    <div class="mobile-tabs" id="mobile-grades">
-        </div>
+            <div class="app-title">مُصحَف المُرُوج</div>
+            <div style="width:40px; text-align:left; color:var(--accent-gold)"><i class="fas fa-bell"></i></div>
+        </header>
+        
+        <div class="mobile-tabs" id="mobile-grades">
+            </div>
+    </div>
 
     <main class="content-area">
         <div id="grid" class="grid-container">
@@ -192,37 +189,39 @@
     </main>
 
     <nav class="bottom-nav">
-        <div class="nav-item active">
+        <div class="nav-item active" onclick="window.location.reload()">
             <i class="fas fa-home"></i>
             <span>الرئيسية</span>
         </div>
-        <div class="nav-item">
-            <i class="fas fa-bullhorn"></i>
-            <span>إعلاناتي</span>
+        <div class="nav-item" onclick="toggleModal('info-modal', true)">
+            <i class="fas fa-info-circle"></i>
+            <span>عن المنصة</span>
         </div>
-        <div class="nav-center" onclick="alert('إضافة سريعة')">
+        
+        <div class="nav-center" onclick="alert('قريباً: إضافة سورة للمفضلة')">
             <i class="fas fa-plus"></i>
         </div>
+
         <div class="nav-item">
-            <i class="far fa-heart"></i>
-            <span>المفضلة</span>
+            <i class="fas fa-star"></i>
+            <span>المتفوقين</span>
         </div>
-        <div class="nav-item" onclick="toggleModal('info-modal', true)">
-            <i class="fas fa-ellipsis-h"></i>
-            <span>المزيد</span>
+        <div class="nav-item">
+            <i class="fas fa-user-graduate"></i>
+            <span>حسابي</span>
         </div>
     </nav>
 
     <div class="overlay" id="video-overlay" style="flex-direction: column;">
-        <button onclick="closeVideo()" style="margin-bottom:10px; color:white; background:none; border:1px solid white; padding:5px 20px; border-radius:20px;">إغلاق ✕</button>
+        <button onclick="closeVideo()" style="margin-bottom:15px; padding:8px 25px; background:var(--accent-gold); border:none; border-radius:20px; font-weight:bold; cursor:pointer;">إغلاق المشغل ✕</button>
         <div class="video-box" id="video-container"></div>
     </div>
 
     <div class="overlay" id="info-modal">
-        <div style="background:white; padding:25px; border-radius:20px; text-align:center; width:90%;">
-            <h3>مُصحَف المُرُوج الرَّقمِي</h3>
-            <p style="margin:15px 0; font-size:14px; color:#666;">منصة تعليمية تهدف لتيسير حفظ وتلاوة السور المقررة لطلاب مدرسة المروج.</p>
-            <button onclick="toggleModal('info-modal', false)" style="background:var(--primary-blue); color:white; border:none; padding:10px 30px; border-radius:10px;">إغلاق</button>
+        <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%; border-top:8px solid var(--accent-gold);">
+            <h3 style="color:var(--primary-green); font-family:'Amiri'; font-size:1.5rem;">۞ تعريف المنصة</h3>
+            <p style="margin:20px 0; font-size:14px; color:#444; line-height:1.6;">منصة تعليمية مخصصة لطلاب مدرسة المروج بمحافظة ظفار، تهدف إلى تيسير حفظ وتلاوة السور المقررة في مادة التربية الإسلامية.</p>
+            <button onclick="toggleModal('info-modal', false)" style="background:var(--primary-green); color:var(--accent-gold); border:none; padding:12px 40px; border-radius:10px; font-weight:bold; width:100%;">العودة للمنصة</button>
         </div>
     </div>
 
@@ -231,34 +230,41 @@
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        let db = {}, currentG = "الصف الخامس";
+        let db = {}, currentG = localStorage.getItem('g') || "الصف الخامس";
 
         async function init() {
-            const { data } = await _supabase.from('surahs').select('*');
-            data.forEach(r => {
-                if (!db[r.grade]) db[r.grade] = [];
-                db[r.grade].push(r);
-            });
-            renderGrades();
-            renderGrid();
-            document.getElementById('loader').style.display = 'none';
+            try {
+                const { data } = await _supabase.from('surahs').select('*');
+                data.forEach(r => {
+                    if (!db[r.grade]) db[r.grade] = [];
+                    db[r.grade].push(r);
+                });
+                renderGrades();
+                renderGrid();
+                document.getElementById('loader').style.display = 'none';
+            } catch (e) { console.error(e); }
         }
 
         function renderGrades() {
             const tabs = document.getElementById('mobile-grades');
             const grades = ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"];
-            tabs.innerHTML = grades.map(g => `<div class="grade-item ${g===currentG?'active':''}" onclick="changeGrade('${g}')">${g}</div>`).join('');
+            tabs.innerHTML = grades.map(g => `<div class="grade-item ${g===currentG?'active':''}" onclick="updateGrade('${g}')">${g}</div>`).join('');
         }
 
-        function changeGrade(g) { currentG = g; renderGrades(); renderGrid(); }
+        function updateGrade(g) { currentG = g; localStorage.setItem('g', g); renderGrades(); renderGrid(); }
 
         function renderGrid() {
             const grid = document.getElementById('grid');
             const items = db[currentG] || [];
+            if(items.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#888;">قريباً إضافة سور لهذا الصف..</p>';
+                return;
+            }
             grid.innerHTML = items.map(i => `
                 <div class="surah-card" onclick="playVideo('${i.video_path}')">
-                    <i class="fas fa-book-open"></i>
+                    <i class="fas fa-quran"></i>
                     <h3>${i.title}</h3>
+                    <p>۞ تلاوة تعليمية ۞</p>
                 </div>
             `).join('');
         }
