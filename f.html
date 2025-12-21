@@ -3,162 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُصحَف المُرُوج الرَّقمِي | المنصة الرسمية</title>
-    
+    <title>مُصحَف المُرُوج الرَّقمِي</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --primary: #041a11;
-            --accent: #c4a04d;
-            --accent-light: #e6cc8a;
-            --bg-light: #fdfaf1;
-            --success: #27ae60;
-            --danger: #c0392b;
-            --shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
+        :root { --primary: #041a11; --accent: #c4a04d; --gold: #e6cc8a; --bg: #fdfaf1; --success: #27ae60; --danger: #e74c3c; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--primary); font-family: 'Tajawal', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        .official-bar { background: #000; color: var(--accent); text-align: center; padding: 6px; font-size: 10px; font-weight: bold; border-bottom: 1px solid var(--accent); }
+        .main-header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+        .logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
         
-        body { 
-            background: var(--primary); 
-            font-family: 'Tajawal', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            overflow: hidden;
-        }
+        .grades-nav { background: #062b1b; padding: 10px; overflow-x: auto; display: flex; gap: 8px; border-bottom: 1px solid var(--accent); }
+        .grade-item { padding: 8px 15px; background: rgba(255,255,255,0.05); color: #fff; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.85rem; border: 1px solid transparent; }
+        .grade-item.active { background: var(--accent); color: #000; font-weight: bold; }
 
-        /* الهيكل العلوي والسفلي */
-        .official-bar { 
-            background: #000; 
-            color: var(--accent); 
-            text-align: center; 
-            padding: 6px; 
-            font-size: 10px; 
-            font-weight: bold; 
-            border-bottom: 1px solid var(--accent);
-            letter-spacing: 1px;
-        }
-
-        .main-header { 
-            background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); 
-            padding: 12px 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            box-shadow: var(--shadow);
-            z-index: 100;
-        }
-
-        .logo-box { display: flex; align-items: center; gap: 12px; }
-        .logo-img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
-        .app-name { font-family: 'Amiri', serif; color: var(--accent); font-size: 1.4rem; }
-
-        /* شريط الصفوف (مطور للهاتف والكمبيوتر) */
-        .grades-scroller {
-            background: #062b1b;
-            padding: 10px;
-            overflow-x: auto;
-            display: flex;
-            gap: 10px;
-            border-bottom: 1px solid var(--accent);
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-        }
-        .grades-scroller::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
-
-        .grade-item {
-            padding: 8px 18px;
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            border-radius: 25px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-size: 0.9rem;
-            transition: 0.3s;
-            border: 1px solid rgba(196,160,77,0.2);
-        }
-        .grade-item.active { background: var(--accent); color: var(--primary); font-weight: bold; border-color: #fff; }
-
-        /* محتوى المنصة */
-        .main-content { 
-            flex: 1; 
-            overflow-y: auto; 
-            background: var(--bg-light); 
-            padding: 20px;
-            padding-bottom: 80px;
-        }
-
-        .semester-box {
-            display: flex;
-            background: #e0d8c3;
-            padding: 4px;
-            border-radius: 50px;
-            margin-bottom: 20px;
-            max-width: 350px;
-            margin-left: auto; margin-right: auto;
-        }
-        .sem-btn {
-            flex: 1; padding: 10px; border: none; border-radius: 50px;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
+        .content { flex: 1; overflow-y: auto; background: var(--bg); padding: 15px; padding-bottom: 80px; }
+        .sem-toggle { display: flex; background: #ddd; padding: 4px; border-radius: 50px; max-width: 300px; margin: 0 auto 15px; }
+        .sem-btn { flex: 1; padding: 8px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
         .sem-btn.active { background: var(--primary); color: var(--accent); }
 
         /* التحدي اليومي */
-        .challenge-banner {
-            background: #000; border: 2px solid var(--accent); border-radius: 15px;
-            padding: 15px; margin-bottom: 20px; color: #fff;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: var(--shadow);
-        }
-        .challenge-info h4 { color: var(--accent); font-size: 0.8rem; margin-bottom: 4px; }
-        .challenge-info p { font-weight: 900; }
+        .challenge-box { background: #000; border: 2px solid var(--accent); border-radius: 12px; padding: 15px; margin-bottom: 20px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+        .challenge-info h4 { color: var(--accent); font-size: 0.8rem; }
+        .challenge-info p { font-weight: bold; font-size: 1.1rem; }
 
-        /* شبكة السور */
-        .surah-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-            gap: 15px; 
-        }
-        .surah-card {
-            background: #fff; border: 2px solid var(--accent); border-radius: 12px;
-            padding: 20px 10px; text-align: center; cursor: pointer;
-            transition: 0.2s; position: relative; font-weight: bold;
-        }
-        .surah-card:active { transform: scale(0.95); }
-        .surah-card.done { border-color: var(--success); background: #f0fff4; }
-        .done-icon { color: var(--success); margin-left: 5px; }
+        .surah-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 12px; }
+        .surah-card { background: #fff; border: 1px solid var(--accent); border-radius: 10px; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; }
 
         /* مشغل الفيديو والرقابة */
-        .video-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.98);
-            z-index: 5000; display: none; align-items: center; justify-content: center;
-            flex-direction: column; padding: 15px;
-        }
-        .video-wrapper { width: 100%; max-width: 700px; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 5000; display: none; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
+        .video-wrap { width: 100%; max-width: 600px; }
         video { width: 100%; border-radius: 10px; border: 2px solid var(--accent); }
         
-        .status-msg { 
-            margin-top: 10px; padding: 10px; border-radius: 5px; 
-            font-weight: bold; display: none; text-align: center;
-        }
-        .msg-warning { background: var(--danger); color: #fff; }
+        /* شريط نسبة التحدي */
+        .progress-container { width: 100%; background: #222; border-radius: 10px; margin-top: 15px; display: none; padding: 10px; border: 1px solid var(--accent); }
+        .progress-bar { height: 10px; background: #444; border-radius: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
+        .progress-text { display: flex; justify-content: space-between; color: var(--accent); font-size: 12px; margin-top: 5px; font-weight: bold; }
 
-        /* زر تعريف المنصة */
-        .btn-about {
-            position: fixed; bottom: 70px; left: 20px;
-            width: 55px; height: 55px; background: var(--accent);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: #fff; border: 2px solid #fff;
-            cursor: pointer; z-index: 400; box-shadow: var(--shadow);
-        }
+        .alert-box { background: var(--danger); color: #fff; padding: 10px; border-radius: 5px; margin-top: 10px; display: none; text-align: center; font-weight: bold; }
+        .btn-close { width: 100%; margin-top: 15px; padding: 12px; background: var(--accent); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        footer.official-bar { position: fixed; bottom: 0; width: 100%; border-top: 1px solid var(--accent); }
-
-        @media (min-width: 992px) {
-            .grades-scroller { justify-content: center; }
-        }
+        .btn-about { position: fixed; bottom: 65px; left: 15px; width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; border: 2px solid #fff; z-index: 400; }
     </style>
 </head>
 <body>
@@ -166,165 +54,171 @@
     <div class="official-bar">سلطنة عمان | وزارة التربية والتعليم | محافظة ظفار</div>
 
     <header class="main-header">
-        <div class="logo-box">
-            <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" class="logo-img">
-            <div>
-                <p style="color: #fff; font-size: 0.7rem; opacity: 0.8;">مدرسة</p>
-                <p style="color: var(--accent-light); font-weight: bold; font-size: 0.9rem;">المروج للتعليم الأساسي</p>
-            </div>
-        </div>
-        <h1 class="app-name">مُصحَف المُرُوج</h1>
+        <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" class="logo-img">
+        <h1 style="color:var(--accent); font-family:'Amiri'; font-size:1.3rem;">مُصحَف المُرُوج</h1>
     </header>
 
-    <nav class="grades-scroller" id="grade-nav"></nav>
+    <nav class="grades-nav" id="grades-nav"></nav>
+    <div class="btn-about" onclick="togglePop('about-pop', true)">۞</div>
 
-    <div class="btn-about" onclick="togglePopup('about-pop', true)">۞</div>
-
-    <main class="main-content">
-        <div class="semester-box">
-            <button id="sem1" class="sem-btn active" onclick="changeSemester(1)">الفصل الأول</button>
-            <button id="sem2" class="sem-btn" onclick="changeSemester(2)">الفصل الثاني</button>
+    <main class="content">
+        <div class="sem-toggle">
+            <button id="sem1" class="sem-btn active" onclick="setSem(1)">الفصل الأول</button>
+            <button id="sem2" class="sem-btn" onclick="setSem(2)">الفصل الثاني</button>
         </div>
 
-        <div class="challenge-banner">
+        <div class="challenge-box">
             <div class="challenge-info">
-                <h4>⭐ تحدي اليوم (الوضع الرقابي)</h4>
-                <p id="challenge-name">جاري التحديد...</p>
+                <h4>⭐ تحدي اليوم</h4>
+                <p id="ch-name">جاري التحميل...</p>
             </div>
-            <button onclick="launchChallenge()" id="play-challenge-btn" style="background:var(--accent); border:none; padding:8px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">ابدأ التحدي</button>
-            <div id="challenge-status" style="display:none; color:var(--success); font-weight:bold;">🏆 تم الإنجاز اليوم</div>
+            <button onclick="confirmChallenge()" id="ch-start-btn" style="background:var(--accent); border:none; padding:8px 20px; border-radius:20px; font-weight:bold;">ابدأ التحدي</button>
+            <div id="ch-done-msg" style="display:none; color:var(--success); font-weight:bold;">🏆 بطل اليوم</div>
         </div>
 
-        <div id="surah-grid" class="surah-grid"></div>
+        <div id="grid" class="surah-grid"></div>
     </main>
 
-    <div class="video-overlay" id="video-overlay">
-        <div class="video-wrapper">
-            <video id="main-video" controlsList="nodownload"></video>
-            <div id="warning-box" class="status-msg msg-warning">⚠️ التقديم ممنوع! استمع لتكسب نقاط التحدي.</div>
-            <button onclick="closeVideo()" style="width:100%; margin-top:20px; padding:12px; background:var(--accent); border:none; border-radius:8px; font-weight:bold; cursor:pointer;">إغلاق المشغل</button>
+    <div class="overlay" id="confirm-pop">
+        <div style="background:var(--primary); border:2px solid var(--accent); padding:25px; border-radius:15px; text-align:center; color:#fff; width:90%; max-width:350px;">
+            <h3 style="color:var(--accent); margin-bottom:15px;">⚠️ شروط التحدي</h3>
+            <ul style="text-align:right; font-size:0.9rem; line-height:1.8; margin-bottom:20px;">
+                <li>• يجب الاستماع لـ 75% من السورة.</li>
+                <li>• يمنع تقديم الفيديو (التقديم يلغي المحاولة).</li>
+                <li>• استمع بخشوع لتنال لقب بطل اليوم.</li>
+            </ul>
+            <button onclick="launchChallenge()" style="background:var(--success); color:#fff; border:none; padding:10px 30px; border-radius:20px; font-weight:bold; margin-left:10px;">أنا مستعد</button>
+            <button onclick="togglePop('confirm-pop', false)" style="background:var(--danger); color:#fff; border:none; padding:10px 20px; border-radius:20px;">إلغاء</button>
         </div>
     </div>
 
-    <div class="video-overlay" id="about-pop">
-        <div style="background:var(--primary); border:2px solid var(--accent); padding:30px; border-radius:15px; text-align:center; color:#fff; width:90%; max-width:400px;">
-            <h2 style="color:var(--accent); margin-bottom:15px; font-family:'Amiri';">تعريف المنصة</h2>
-            <p style="line-height:1.8;">منصة رقمية لخدمة طلاب مدرسة المروج في حفظ وتلاوة القرآن الكريم.<br><br>إعداد الأستاذ: <b>فيصل العريبي</b></p>
-            <button onclick="togglePopup('about-pop', false)" style="margin-top:25px; padding:10px 40px; background:var(--accent); border:none; border-radius:20px; font-weight:bold;">حسناً</button>
+    <div class="overlay" id="player-overlay">
+        <div class="video-wrap">
+            <video id="main-video"></video>
+            
+            <div id="anti-cheat-alert" class="alert-box">⚠️ التقديم ممنوع في التحدي! تم إرجاعك.</div>
+            
+            <div id="challenge-ui" class="progress-container">
+                <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+                <div class="progress-text">
+                    <span id="progress-pct">0%</span>
+                    <span>نسبة إنجاز التحدي</span>
+                    <span>الهدف: 75%</span>
+                </div>
+            </div>
+
+            <button onclick="closeVideo()" class="btn-close">إغلاق</button>
         </div>
     </div>
 
-    <footer class="official-bar">جميع الحقوق محفوظة - مدرسة المروج - محافظة ظفار</footer>
+    <div class="overlay" id="about-pop">
+        <div style="background:var(--primary); border:2px solid var(--accent); padding:25px; border-radius:15px; text-align:center; color:#fff;">
+            <p>۞ مُصحَف المُرُوج الرَّقمِي ۞<br>تطوير الأستاذ: فيصل العريبي</p>
+            <button onclick="togglePop('about-pop', false)" class="btn-close">إغلاق</button>
+        </div>
+    </div>
+
+    <footer class="official-bar">وزارة التربية والتعليم - مدرسة المروج</footer>
 
     <script>
         const SB_URL = 'https://vchzkeebmjqiohgoknnm.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
         const _sb = supabase.createClient(SB_URL, SB_KEY);
 
-        let surahs = [], currentGrade = "الصف الخامس", currentSem = 1;
-        let completed = JSON.parse(localStorage.getItem('murooj_done')) || [];
-        let isChallenge = false, lastPos = 0;
+        let surahs = [], grade = "الصف الخامس", sem = 1, isChMode = false, lastT = 0;
+        let todayChId = null;
 
         async function init() {
             const { data } = await _sb.from('surahs').select('*');
             surahs = data || [];
             renderGrades();
-            updateGrid();
-            checkChallengeStatus();
+            checkChStatus();
         }
 
         function renderGrades() {
-            const grades = ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"];
-            const nav = document.getElementById('grade-nav');
-            nav.innerHTML = grades.map(g => `
-                <div class="grade-item ${g === currentGrade ? 'active' : ''}" onclick="selectGrade('${g}')">${g}</div>
-            `).join('');
+            const gs = ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"];
+            const nav = document.getElementById('grades-nav');
+            nav.innerHTML = gs.map(g => `<div class="grade-item ${g===grade?'active':''}" onclick="setGrade('${g}')">${g}</div>`).join('');
+            renderGrid();
         }
 
-        function selectGrade(g) { currentGrade = g; renderGrades(); updateGrid(); }
-        function changeSemester(s) {
-            currentSem = s;
-            document.getElementById('sem1').className = s === 1 ? 'sem-btn active' : 'sem-btn';
-            document.getElementById('sem2').className = s === 2 ? 'sem-btn active' : 'sem-btn';
-            updateGrid();
-        }
+        function setGrade(g) { grade = g; renderGrades(); }
+        function setSem(s) { sem = s; document.getElementById('sem1').className = s===1?'sem-btn active':'sem-btn'; document.getElementById('sem2').className = s===2?'sem-btn active':'sem-btn'; renderGrid(); }
 
-        function updateGrid() {
-            const filtered = surahs.filter(s => s.grade === currentGrade && s.semester == currentSem);
-            const grid = document.getElementById('surah-grid');
-            grid.innerHTML = filtered.map(s => `
-                <div class="surah-card ${completed.includes(s.id) ? 'done' : ''}" onclick="openVideo('${s.video_path}', '${s.id}', false)">
-                    ${completed.includes(s.id) ? '<span class="done-icon">✅</span>' : ''}
-                    ${s.title}
-                </div>
+        function renderGrid() {
+            const filtered = surahs.filter(s => s.grade === grade && s.semester == sem);
+            document.getElementById('grid').innerHTML = filtered.map(s => `
+                <div class="surah-card" onclick="openVideo('${s.video_path}', false)">${s.title}</div>
             `).join('');
             
-            // تحديث اسم تحدي اليوم من المنهج الحالي
             const dailyIdx = new Date().getDate() % (filtered.length || 1);
-            if(filtered[dailyIdx]) document.getElementById('challenge-name').innerText = filtered[dailyIdx].title;
-        }
-
-        function checkChallengeStatus() {
-            const today = new Date().toDateString();
-            if(localStorage.getItem('murooj_day_' + today)) {
-                document.getElementById('play-challenge-btn').style.display = 'none';
-                document.getElementById('challenge-status').style.display = 'block';
+            if(filtered[dailyIdx]) {
+                todayChId = filtered[dailyIdx].id;
+                document.getElementById('ch-name').innerText = filtered[dailyIdx].title;
             }
         }
 
-        function launchChallenge() {
-            const filtered = surahs.filter(s => s.grade === currentGrade && s.semester == currentSem);
-            const dailyIdx = new Date().getDate() % (filtered.length || 1);
-            const target = filtered[dailyIdx];
-            if(target) openVideo(target.video_path, target.id, true);
+        function checkChStatus() {
+            const key = 'ch_won_' + new Date().toDateString();
+            if(localStorage.getItem(key)) {
+                document.getElementById('ch-start-btn').style.display = 'none';
+                document.getElementById('ch-done-msg').style.display = 'block';
+            }
         }
 
-        function openVideo(path, id, challengeMode) {
-            isChallenge = challengeMode;
-            lastPos = 0;
-            const video = document.getElementById('main-video');
-            const overlay = document.getElementById('video-overlay');
-            const warning = document.getElementById('warning-box');
+        function confirmChallenge() { togglePop('confirm-pop', true); }
+
+        function launchChallenge() {
+            togglePop('confirm-pop', false);
+            const filtered = surahs.filter(s => s.grade === grade && s.semester == sem);
+            const dailyIdx = new Date().getDate() % (filtered.length || 1);
+            openVideo(filtered[dailyIdx].video_path, true);
+        }
+
+        function openVideo(path, challenge) {
+            isChMode = challenge; lastT = 0;
+            const v = document.getElementById('main-video');
+            const url = path.includes('http') ? path : `https://ict.moe.gov.om/tlawti/video/${path}`;
+            v.src = url;
             
-            video.src = path.includes('http') ? path : `https://ict.moe.gov.om/tlawti/video/${path}`;
-            overlay.style.display = 'flex';
-            video.play();
+            document.getElementById('player-overlay').style.display = 'flex';
+            document.getElementById('challenge-ui').style.display = challenge ? 'block' : 'none';
+            
+            // تفعيل/تعطيل أزرار التحكم الافتراضية حسب الوضع
+            v.controls = !challenge; 
 
-            // منطق الرقابة الصارم
-            video.onseeking = () => {
-                if(isChallenge && video.currentTime > lastPos + 1) {
-                    video.currentTime = lastPos;
-                    warning.style.display = 'block';
-                    setTimeout(() => warning.style.display = 'none', 3000);
+            v.onseeking = () => {
+                if(isChMode && v.currentTime > lastT + 1) {
+                    v.currentTime = lastT;
+                    document.getElementById('anti-cheat-alert').style.display = 'block';
+                    setTimeout(() => document.getElementById('anti-cheat-alert').style.display = 'none', 3000);
                 }
             };
 
-            video.ontimeupdate = () => {
-                if (video.currentTime > lastPos) lastPos = video.currentTime;
+            v.ontimeupdate = () => {
+                if (v.currentTime > lastT) lastT = v.currentTime;
                 
-                // شرط الإكمال 75%
-                if(video.duration > 0 && (video.currentTime / video.duration) >= 0.75) {
-                    if(!completed.includes(id)) {
-                        completed.push(id);
-                        localStorage.setItem('murooj_done', JSON.stringify(completed));
-                        updateGrid();
-                    }
-                    if(isChallenge) {
-                        localStorage.setItem('murooj_day_' + new Date().toDateString(), 'true');
-                        checkChallengeStatus();
+                const pct = Math.floor((v.currentTime / v.duration) * 100) || 0;
+                if(isChMode) {
+                    document.getElementById('progress-fill').style.width = pct + "%";
+                    document.getElementById('progress-pct').innerText = pct + "%";
+                    
+                    if(pct >= 75) {
+                        localStorage.setItem('ch_won_' + new Date().toDateString(), 'true');
+                        checkChStatus();
                     }
                 }
             };
+            v.play();
         }
 
         function closeVideo() {
             const v = document.getElementById('main-video');
             v.pause(); v.src = "";
-            document.getElementById('video-overlay').style.display = 'none';
+            document.getElementById('player-overlay').style.display = 'none';
         }
 
-        function togglePopup(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
-
+        function togglePop(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; }
         init();
     </script>
 </body>
