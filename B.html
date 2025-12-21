@@ -48,7 +48,7 @@
         .brand img { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--accent-gold); background: #fff; }
         .app-title { font-family: 'Amiri', serif; color: var(--accent-gold); font-size: 1.1rem; }
 
-        /* شريط الصفوف (التبويبات) */
+        /* شريط الصفوف */
         .mobile-tabs { 
             display: flex; 
             background: var(--primary-green);
@@ -83,6 +83,30 @@
             border-top-right-radius: 25px;
         }
 
+        /* مفتاح الفصول الدراسية */
+        .sem-switcher { 
+            display: flex; 
+            background: #e0d9c8; 
+            border-radius: 12px; 
+            margin: 0 auto 20px auto; 
+            padding: 4px; 
+            width: 100%; 
+            max-width: 350px; 
+        }
+        .sem-btn { 
+            flex: 1; 
+            padding: 10px; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            background: transparent; 
+            font-size: 13px;
+            color: var(--primary-green);
+            transition: 0.3s;
+        }
+        .sem-btn.active { background: var(--primary-green); color: var(--accent-gold); }
+
         /* شبكة السور (عمودين) */
         .grid-container {
             display: grid;
@@ -107,7 +131,7 @@
         .surah-card h3 { font-size: 13px; color: #041a11; font-weight: 800; }
         .surah-card p { font-size: 10px; color: var(--accent-gold); font-weight: bold; }
 
-        /* شريط التنقل السفلي الاحترافي - ثابت */
+        /* البار السفلي */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -135,7 +159,6 @@
         .nav-item.active { color: var(--accent-gold); }
         .nav-item i { font-size: 18px; }
 
-        /* الزر الأوسط الذهبي البارز */
         .nav-center {
             position: relative;
             top: -22px;
@@ -152,7 +175,7 @@
             border: 4px solid var(--app-body-bg);
         }
 
-        /* النوافذ واللودر */
+        /* اللودر والنوافذ */
         #loader { position: fixed; inset: 0; background: var(--app-body-bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -165,7 +188,7 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top:15px; font-weight:bold; color:var(--primary-green);">مُصحَف المُرُوج الرَّقمِي...</p>
+        <p style="margin-top:15px; font-weight:bold; color:var(--primary-green);">جاري تحميل البيانات...</p>
     </div>
 
     <div class="app-header">
@@ -179,11 +202,15 @@
             <div style="width:40px; text-align:left; color:var(--accent-gold)"><i class="fas fa-bell"></i></div>
         </header>
         
-        <div class="mobile-tabs" id="mobile-grades">
-            </div>
+        <div class="mobile-tabs" id="mobile-grades"></div>
     </div>
 
     <main class="content-area">
+        <div class="sem-switcher">
+            <button class="sem-btn" id="btn-s1" onclick="updateSem(1)">الفصل الأول</button>
+            <button class="sem-btn" id="btn-s2" onclick="updateSem(2)">الفصل الثاني</button>
+        </div>
+
         <div id="grid" class="grid-container">
             </div>
     </main>
@@ -195,33 +222,31 @@
         </div>
         <div class="nav-item" onclick="toggleModal('info-modal', true)">
             <i class="fas fa-info-circle"></i>
-            <span>عن المنصة</span>
+            <span>تعريف</span>
         </div>
-        
         <div class="nav-center" onclick="alert('قريباً: إضافة سورة للمفضلة')">
             <i class="fas fa-plus"></i>
         </div>
-
         <div class="nav-item">
             <i class="fas fa-star"></i>
-            <span>المتفوقين</span>
+            <span>النتائج</span>
         </div>
         <div class="nav-item">
             <i class="fas fa-user-graduate"></i>
-            <span>حسابي</span>
+            <span>الملف</span>
         </div>
     </nav>
 
     <div class="overlay" id="video-overlay" style="flex-direction: column;">
-        <button onclick="closeVideo()" style="margin-bottom:15px; padding:8px 25px; background:var(--accent-gold); border:none; border-radius:20px; font-weight:bold; cursor:pointer;">إغلاق المشغل ✕</button>
+        <button onclick="closeVideo()" style="margin-bottom:15px; padding:8px 25px; background:var(--accent-gold); border:none; border-radius:20px; font-weight:bold;">إغلاق ✕</button>
         <div class="video-box" id="video-container"></div>
     </div>
 
     <div class="overlay" id="info-modal">
         <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%; border-top:8px solid var(--accent-gold);">
             <h3 style="color:var(--primary-green); font-family:'Amiri'; font-size:1.5rem;">۞ تعريف المنصة</h3>
-            <p style="margin:20px 0; font-size:14px; color:#444; line-height:1.6;">منصة تعليمية مخصصة لطلاب مدرسة المروج بمحافظة ظفار، تهدف إلى تيسير حفظ وتلاوة السور المقررة في مادة التربية الإسلامية.</p>
-            <button onclick="toggleModal('info-modal', false)" style="background:var(--primary-green); color:var(--accent-gold); border:none; padding:12px 40px; border-radius:10px; font-weight:bold; width:100%;">العودة للمنصة</button>
+            <p style="margin:20px 0; font-size:14px; color:#444; line-height:1.6;">مرحباً بكم في مُصحَف المُرُوج الرَّقمِي، تهدف المنصة إلى تيسير حفظ وتلاوة السور المقررة لطلابنا الأعزاء.</p>
+            <button onclick="toggleModal('info-modal', false)" style="background:var(--primary-green); color:var(--accent-gold); border:none; padding:12px 40px; border-radius:10px; font-weight:bold; width:100%;">العودة</button>
         </div>
     </div>
 
@@ -230,17 +255,17 @@
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        let db = {}, currentG = localStorage.getItem('g') || "الصف الخامس";
+        let db = {}, currentG = localStorage.getItem('g') || "الصف الخامس", currentS = parseInt(localStorage.getItem('s')) || 1;
 
         async function init() {
             try {
                 const { data } = await _supabase.from('surahs').select('*');
                 data.forEach(r => {
-                    if (!db[r.grade]) db[r.grade] = [];
-                    db[r.grade].push(r);
+                    if (!db[r.grade]) db[r.grade] = { 1: [], 2: [] };
+                    db[r.grade][r.semester].push({ t: r.title, v: r.video_path });
                 });
                 renderGrades();
-                renderGrid();
+                updateSem(currentS);
                 document.getElementById('loader').style.display = 'none';
             } catch (e) { console.error(e); }
         }
@@ -253,17 +278,24 @@
 
         function updateGrade(g) { currentG = g; localStorage.setItem('g', g); renderGrades(); renderGrid(); }
 
+        function updateSem(s) { 
+            currentS = s; localStorage.setItem('s', s);
+            document.getElementById('btn-s1').className = `sem-btn ${s===1?'active':''}`;
+            document.getElementById('btn-s2').className = `sem-btn ${s===2?'active':''}`;
+            renderGrid();
+        }
+
         function renderGrid() {
-            const grid = document.getElementById('grid');
-            const items = db[currentG] || [];
+            const grid = document.getElementById('grid'); grid.innerHTML = '';
+            const items = (db[currentG] && db[currentG][currentS]) || [];
             if(items.length === 0) {
-                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#888;">قريباً إضافة سور لهذا الصف..</p>';
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#888; font-size:12px;">لا توجد سور مضافة لهذا الفصل حالياً.</p>';
                 return;
             }
             grid.innerHTML = items.map(i => `
-                <div class="surah-card" onclick="playVideo('${i.video_path}')">
+                <div class="surah-card" onclick="playVideo('${i.v}')">
                     <i class="fas fa-quran"></i>
-                    <h3>${i.title}</h3>
+                    <h3>${i.t}</h3>
                     <p>۞ تلاوة تعليمية ۞</p>
                 </div>
             `).join('');
@@ -278,7 +310,6 @@
 
         function closeVideo() { document.getElementById('video-overlay').style.display = 'none'; document.getElementById('video-container').innerHTML = ''; }
         function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
-
         init();
     </script>
 </body>
