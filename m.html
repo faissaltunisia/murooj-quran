@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُصحَف المُرُوج - الإصدار الذكي</title>
+    <title>مُصحَف المُرُوج - الإصدار الشامل</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -16,63 +16,78 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--primary); font-family: 'Tajawal', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
+        /* --- الشريط العلوي --- */
         .top-stripe { background: #000; color: var(--accent); text-align: center; padding: 4px; font-size: 10px; font-weight: bold; border-bottom: 1px solid var(--accent); }
         .header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent); z-index: 1000; }
         .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
+        .logo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
 
-        .app-body { display: flex; flex: 1; overflow: hidden; flex-direction: row; }
+        .app-body { display: flex; flex: 1; overflow: hidden; }
 
-        /* --- تنسيق الصفوف (حاسوب vs هاتف) --- */
-        .sidebar { width: 240px; background: var(--sidebar-bg); border-left: 2px solid var(--accent); display: flex; flex-direction: column; }
-        .grades-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-        
-        /* زر التعريف */
-        .btn-about { background: var(--gold-gradient); color: var(--primary); padding: 15px; text-align: center; cursor: pointer; font-weight: 900; border-bottom: 2px solid var(--primary); }
-
-        .grade-item { padding: 15px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); white-space: nowrap; transition: 0.3s; }
+        /* --- الشريط الجانبي (يتحول لشريط علوي في الهاتف) --- */
+        .sidebar { width: 240px; background: var(--sidebar-bg); border-left: 2px solid var(--accent); display: flex; flex-direction: column; z-index: 999; }
+        .btn-about-trigger { background: var(--gold-gradient); color: var(--primary); padding: 20px; text-align: center; cursor: pointer; font-weight: 900; font-size: 1.1rem; border-bottom: 3px solid var(--primary); }
+        .sidebar-nav { flex: 1; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; }
+        .grade-item { padding: 18px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; white-space: nowrap; }
         .grade-item.active { background: rgba(196,160,77,0.2); color: var(--accent); border-right: 4px solid var(--accent); }
 
         /* المحتوى */
-        .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 20px; padding-bottom: 80px; }
+        .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 20px; padding-bottom: 100px; }
 
-        .challenge-banner { background: #fff; border: 2px solid var(--accent); border-radius: 12px; padding: 12px 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .sem-box { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
-        .sem-btn { padding: 8px 18px; border-radius: 10px; border: 2px solid var(--primary); background: #fff; font-weight: 900; cursor: pointer; font-size: 0.85rem; }
+        /* بطاقة التحدي */
+        .challenge-banner {
+            background: #fff; border: 2.5px solid var(--accent); border-radius: 15px;
+            padding: 12px 20px; margin: 0 auto 20px; display: flex; align-items: center; 
+            justify-content: space-between; max-width: 600px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .ch-info p { font-weight: 900; color: var(--primary); font-size: 1.1rem; }
+
+        /* الفصول الدراسية */
+        .sem-box { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
+        .sem-btn { 
+            padding: 10px 25px; border-radius: 12px; border: 2px solid var(--primary); 
+            background: #fff; color: var(--primary); font-weight: 900; cursor: pointer;
+        }
         .sem-btn.active { background: var(--primary); color: var(--accent); border-color: var(--accent); }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-        .card { background: #fff; padding: 25px 10px; border-radius: 12px; text-align: center; border: 1px solid #ddd; cursor: pointer; font-weight: 900; color: var(--primary); font-size: 1rem; }
+        /* الشبكة */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .card { background: #fff; padding: 35px 10px; border-radius: 15px; text-align: center; border: 1px solid #ddd; cursor: pointer; font-weight: 900; color: var(--primary); }
 
         /* المشغل */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; padding: 10px; }
-        .player-frame { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; position: relative; }
-        .shield { position: absolute; inset: 0; z-index: 100; }
-        .hud { width: 100%; max-width: 800px; margin-top: 15px; text-align: center; color: #fff; }
-        .pct-val { font-size: 2.5rem; font-weight: 900; color: var(--accent); }
-        .progress-line { height: 6px; background: #222; border-radius: 5px; overflow: hidden; margin-top: 8px; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; padding: 15px; }
+        .player-frame { 
+            width: 95vw; max-width: 850px; aspect-ratio: 16/9; 
+            background: #000; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; position: relative;
+        }
+        .shield { position: absolute; inset: 0; z-index: 100; cursor: not-allowed; }
+        
+        .hud-monitor { width: 95vw; max-width: 850px; margin-top: 20px; text-align: center; color: #fff; }
+        .pct-val { font-size: 3rem; font-weight: 900; color: var(--accent); }
+        .progress-line { height: 8px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .fill { height: 100%; width: 0%; background: var(--gold-gradient); transition: 0.5s; }
-        .btn-exit { margin-top: 20px; background: transparent; color: #ff6b6b; border: 1.5px solid #ff6b6b; padding: 10px 35px; border-radius: 50px; font-weight: 900; cursor: pointer; }
 
-        .footer { background: #000; padding: 8px; text-align: center; font-size: 10px; color: var(--accent); border-top: 1px solid var(--accent); position: fixed; bottom: 0; width: 100%; }
+        .btn-exit { margin-top: 25px; background: transparent; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 45px; border-radius: 50px; font-weight: 900; cursor: pointer; }
 
-        /* --- تعديلات الهاتف الذكية --- */
+        .footer { background: #000; padding: 10px; text-align: center; font-size: 11px; color: var(--accent); border-top: 1px solid var(--accent); position: fixed; bottom: 0; width: 100%; }
+
+        /* --- تعديلات الهاتف الذكية للشريط العلوي --- */
         @media (max-width: 768px) {
             .app-body { flex-direction: column; }
             .sidebar { width: 100%; height: auto; border-left: none; border-bottom: 2px solid var(--accent); }
-            .grades-container { 
+            .btn-about-trigger { padding: 10px; font-size: 0.9rem; }
+            .sidebar-nav { 
                 flex-direction: row; 
                 overflow-x: auto; 
                 overflow-y: hidden;
                 padding: 5px;
                 background: var(--sidebar-bg);
-                scrollbar-width: none;
             }
-            .grades-container::-webkit-scrollbar { display: none; }
-            .grade-item { padding: 10px 15px; border-bottom: none; border-radius: 8px; margin: 0 4px; font-size: 0.85rem; }
-            .grade-item.active { border-right: none; border-bottom: 3px solid var(--accent); }
-            .btn-about { font-size: 0.8rem; padding: 10px; }
-            .card { padding: 20px 5px; font-size: 0.9rem; }
+            .sidebar-nav::-webkit-scrollbar { display: none; }
+            .grade-item { padding: 12px 15px; border-bottom: none; border-radius: 8px; font-size: 0.8rem; margin: 0 4px; }
+            .grade-item.active { border-right: none; border-bottom: 3px solid var(--accent); background: rgba(196,160,77,0.1); }
+            .pct-val { font-size: 2rem; }
+            .content { padding: 15px; }
         }
     </style>
 </head>
@@ -83,28 +98,30 @@
     <header class="header">
         <div class="logo-box">
             <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" class="logo">
-            <p style="color:var(--accent); font-weight:900; font-size:0.8rem;">مُصحَف المُرُوج</p>
+            <p style="color:var(--accent); font-weight:900; font-size:0.85rem;">مدرسة المروج</p>
         </div>
-        <div class="btn-about" onclick="toggleModal('modal-about', true)" style="border:1px solid var(--accent); border-radius:5px; padding:5px 10px; font-size:0.7rem;">تعريف المنصة</div>
+        <h1 style="font-family:'Amiri'; color:var(--accent); font-size:1.4rem;">مُصحَف المُرُوج</h1>
+        <div style="width:40px"></div>
     </header>
 
     <div class="app-body">
         <aside class="sidebar">
-            <div class="grades-container" id="grades-list"></div>
+            <div class="btn-about-trigger" onclick="document.getElementById('modal-about').style.display='flex'">۞ تعريف المنصة</div>
+            <div class="sidebar-nav" id="grades-list"></div>
         </aside>
 
         <main class="content">
             <div class="challenge-banner">
-                <div style="flex:1">
-                    <p style="color:#888; font-size:0.65rem; font-weight:bold;">تحدي اليوم</p>
-                    <p id="ch-title" style="font-weight:900; color:var(--primary); font-size:0.9rem;">جاري التحميل...</p>
+                <div class="ch-info">
+                    <span style="color:#888; font-size:0.7rem; font-weight:bold;">تحدي اليوم:</span>
+                    <p id="ch-title">جاري التحميل...</p>
                 </div>
-                <button class="sem-btn active" onclick="toggleModal('modal-confirm', true)">ابدأ</button>
+                <button class="sem-btn active" onclick="document.getElementById('modal-confirm').style.display='flex'" style="padding:8px 20px;">ابدأ</button>
             </div>
 
             <div class="sem-box">
-                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل 1</button>
-                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل 2</button>
+                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الأول</button>
+                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الثاني</button>
             </div>
 
             <div id="surah-grid" class="grid"></div>
@@ -112,19 +129,19 @@
     </div>
 
     <div class="modal" id="modal-about">
-        <div style="background:var(--primary); border:2px solid var(--accent); padding:25px; border-radius:15px; text-align:center; max-width:300px; color:#fff;">
-            <h3 style="color:var(--accent)">مُصحَف المُرُوج</h3>
-            <p style="margin:15px 0; font-size:0.85rem;">إشراف الأستاذ: فيصل العريبي</p>
-            <button class="sem-btn active" onclick="toggleModal('modal-about', false)" style="width:100%">إغلاق</button>
+        <div style="background:var(--primary); border:2px solid var(--accent); padding:30px; border-radius:20px; text-align:center; max-width:400px; color:#fff;">
+            <h2 style="color:var(--accent); margin-bottom:15px;">مُصحَف المُرُوج</h2>
+            <p style="line-height:1.6;">إشراف الأستاذ: <b>فيصل العريبي</b></p>
+            <button class="btn-about-trigger" onclick="document.getElementById('modal-about').style.display='none'" style="width:100%; border-radius:10px; margin-top:20px; border:none;">إغلاق</button>
         </div>
     </div>
 
     <div class="modal" id="modal-confirm">
-        <div style="background:var(--primary); border:2px solid var(--accent); padding:25px; border-radius:15px; text-align:center; max-width:300px; color:#fff;">
-            <h3 style="color:var(--accent)">تنبيه التحدي</h3>
-            <p style="margin:15px 0; font-size:0.85rem;">سيتم قفل التحكم بالفيديو.<br>المطلوب 75% للفوز.</p>
-            <button class="sem-btn active" onclick="startChallenge()" style="width:100%; margin-bottom:10px;">بدء</button>
-            <button onclick="toggleModal('modal-confirm', false)" style="color:#fff; background:transparent; border:none;">إلغاء</button>
+        <div style="background:var(--primary); border:2px solid var(--accent); padding:30px; border-radius:20px; text-align:center; max-width:350px;">
+            <h2 style="color:var(--accent)">وضع المراقبة</h2>
+            <p style="color:#fff; margin:15px 0;">سيتم قفل التحكم بالفيديو.<br>يجب إكمال 75% للفوز بالوسام.</p>
+            <button class="sem-btn active" onclick="startChallenge()" style="width:100%; margin-bottom:10px;">بدء الآن</button>
+            <button onclick="document.getElementById('modal-confirm').style.display='none'" style="background:transparent; color:#fff; border:none; cursor:pointer;">إلغاء</button>
         </div>
     </div>
 
@@ -133,14 +150,15 @@
             <div class="shield" id="player-shield" style="display:none;"></div>
             <div id="video-container" style="width:100%; height:100%;"></div>
         </div>
-        <div class="hud" id="hud">
+        <div class="hud-monitor" id="hud">
             <div class="pct-val" id="pct-txt">0%</div>
+            <p style="color:var(--accent); font-weight:bold;">نسبة الإنجاز المحققة</p>
             <div class="progress-line"><div class="fill" id="bar-fill"></div></div>
         </div>
-        <button class="btn-exit" onclick="handleExit()">إغلاق</button>
+        <button class="btn-exit" onclick="handleExit()">إغلاق وإنهاء</button>
     </div>
 
-    <footer class="footer">مدرسة المروج 2025</footer>
+    <footer class="footer">جميع الحقوق محفوظة - مدرسة المروج 2025</footer>
 
     <script>
         const SB_URL = 'https://vchzkeebmjqiohgoknnm.supabase.co';
@@ -161,7 +179,6 @@
         }
         function setGrade(g) { grade = g; renderSidebar(); refresh(); }
         function switchSem(s) { sem = s; document.getElementById('s1').className = s===1?'sem-btn active':'sem-btn'; document.getElementById('s2').className = s===2?'sem-btn active':'sem-btn'; refresh(); }
-        function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
 
         function refresh() {
             const list = surahs.filter(s => s.grade === grade && s.semester == sem);
@@ -170,7 +187,7 @@
         }
 
         function startChallenge() {
-            toggleModal('modal-confirm', false);
+            document.getElementById('modal-confirm').style.display='none';
             const list = surahs.filter(s => s.grade === grade && s.semester == sem);
             const daily = list[new Date().getDate() % list.length];
             if(daily) play(daily.video_path, true);
@@ -178,7 +195,7 @@
 
         function play(path, mode) {
             isCh = mode;
-            toggleModal('player-modal', true);
+            document.getElementById('player-modal').style.display = 'flex';
             document.getElementById('hud').style.display = mode ? 'block' : 'none';
             document.getElementById('player-shield').style.display = mode ? 'block' : 'none';
             const container = document.getElementById('video-container');
@@ -206,18 +223,19 @@
             if(isNaN(p)) return;
             document.getElementById('pct-txt').innerText = p + '%';
             document.getElementById('bar-fill').style.width = p + '%';
+            if(p >= 75) document.getElementById('pct-txt').style.color = "#27ae60";
         }
 
         function handleExit() {
             const p = parseInt(document.getElementById('pct-txt').innerText);
             if(isCh && p < 75) {
-                if(confirm("تنبيه: لم تصل لـ 75%، هل تود الخروج؟")) resetPlayer();
+                if(confirm("لم تصل للنسبة المطلوبة (75%). هل تود الخروج؟")) resetPlayer();
             } else { resetPlayer(); }
         }
 
         function resetPlayer() {
             document.getElementById('video-container').innerHTML = "";
-            toggleModal('player-modal', false);
+            document.getElementById('player-modal').style.display = 'none';
             clearInterval(timer);
         }
 
