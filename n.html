@@ -15,10 +15,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--primary); font-family: 'Tajawal', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* الهيدر والتنسيقات */
+        /* الهيدر */
         .top-stripe { background: #000; color: var(--accent); text-align: center; padding: 4px; font-size: 10px; font-weight: bold; border-bottom: 1px solid var(--accent); }
         .header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent); z-index: 1000; }
         .logo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
+
         .app-body { display: flex; flex: 1; overflow: hidden; }
 
         /* الشريط الجانبي / العلوي للهاتف */
@@ -27,15 +28,24 @@
         .grade-item { padding: 18px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; white-space: nowrap; }
         .grade-item.active { background: rgba(196,160,77,0.2); color: var(--accent); border-right: 4px solid var(--accent); }
 
+        /* المحتوى */
         .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 20px; padding-bottom: 100px; }
+        
+        /* بطاقة التحدي */
         .challenge-banner { background: #fff; border: 2.5px solid var(--accent); border-radius: 15px; padding: 12px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; max-width: 600px; margin-left: auto; margin-right: auto; }
+        
+        /* أزرار الفصول (الفصل 1 والفصل 2) */
         .sem-box { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
-        .sem-btn { padding: 10px 25px; border-radius: 12px; border: 2px solid var(--primary); background: #fff; font-weight: 900; cursor: pointer; }
-        .sem-btn.active { background: var(--primary); color: var(--accent); border-color: var(--accent); }
+        .sem-btn { 
+            padding: 10px 30px; border-radius: 12px; border: 2px solid var(--primary); 
+            background: #fff; color: var(--primary); font-weight: 900; cursor: pointer; transition: 0.3s;
+        }
+        .sem-btn.active { background: var(--primary); color: var(--accent); border-color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
         .card { background: #fff; padding: 35px 10px; border-radius: 15px; text-align: center; border: 1px solid #ddd; cursor: pointer; font-weight: 900; color: var(--primary); }
 
-        /* المشغل الاحترافي */
+        /* المشغل */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; padding: 15px; }
         .player-frame { width: 95vw; max-width: 850px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; position: relative; }
         .shield { position: absolute; inset: 0; z-index: 100; cursor: not-allowed; }
@@ -44,6 +54,7 @@
         .progress-line { height: 8px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .fill { height: 100%; width: 0%; background: var(--gold-gradient); transition: 0.3s linear; }
         .btn-exit { margin-top: 25px; background: transparent; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 45px; border-radius: 50px; font-weight: 900; cursor: pointer; }
+        
         .footer { background: #000; padding: 10px; text-align: center; font-size: 11px; color: var(--accent); border-top: 1px solid var(--accent); position: fixed; bottom: 0; width: 100%; }
 
         @media (max-width: 768px) {
@@ -52,6 +63,7 @@
             .sidebar-nav { flex-direction: row; overflow-x: auto; padding: 5px; }
             .grade-item { padding: 12px 15px; border-bottom: none; font-size: 0.8rem; }
             .grade-item.active { border-right: none; border-bottom: 3px solid var(--accent); }
+            .sem-btn { padding: 8px 20px; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -73,12 +85,14 @@
         <main class="content">
             <div class="challenge-banner">
                 <div><span style="font-size:0.7rem; color:#888;">تحدي اليوم:</span><p id="ch-title" style="font-weight:900;">...</p></div>
-                <button class="sem-btn active" onclick="document.getElementById('modal-confirm').style.display='flex'">ابدأ</button>
+                <button class="sem-btn active" style="padding: 5px 15px;" onclick="document.getElementById('modal-confirm').style.display='flex'">ابدأ</button>
             </div>
+
             <div class="sem-box">
-                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل 1</button>
-                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل 2</button>
+                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الدراسي الأول</button>
+                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الدراسي الثاني</button>
             </div>
+
             <div id="surah-grid" class="grid"></div>
         </main>
     </div>
@@ -98,7 +112,7 @@
     <div class="modal" id="modal-confirm">
         <div style="background:var(--primary); border:2px solid var(--accent); padding:30px; border-radius:20px; text-align:center; max-width:350px; color:#fff;">
             <h2 style="color:var(--accent)">وضع المراقبة</h2>
-            <p style="margin:15px 0;">سيتم قفل التحكم بالفيديو لضمان التلاوة.</p>
+            <p style="margin:15px 0;">سيتم قفل التحكم بالفيديو لضمان التركيز.</p>
             <button class="sem-btn active" onclick="startChallenge()" style="width:100%;">بدء الآن</button>
             <button onclick="document.getElementById('modal-confirm').style.display='none'" style="background:none; border:none; color:#999; margin-top:10px; cursor:pointer;">إلغاء</button>
         </div>
@@ -121,8 +135,15 @@
             const gs = ["الصف الخامس", "الصف السادس", "الصف السابع", "الصف الثامن", "الصف التاسع", "الصف العاشر", "الصف الحادي عشر", "الصف الثاني عشر"];
             document.getElementById('grades-list').innerHTML = gs.map(g => `<div class="grade-item ${g===grade?'active':''}" onclick="setGrade('${g}')">${g}</div>`).join('');
         }
+
         function setGrade(g) { grade = g; renderSidebar(); refresh(); }
-        function switchSem(s) { sem = s; document.getElementById('s1').className = s===1?'sem-btn active':'sem-btn'; document.getElementById('s2').className = s===2?'sem-btn active':'sem-btn'; refresh(); }
+
+        function switchSem(s) { 
+            sem = s; 
+            document.getElementById('s1').className = s===1?'sem-btn active':'sem-btn'; 
+            document.getElementById('s2').className = s===2?'sem-btn active':'sem-btn'; 
+            refresh(); 
+        }
 
         function refresh() {
             const list = surahs.filter(s => s.grade === grade && s.semester == sem);
@@ -137,11 +158,8 @@
             if(daily) play(daily.video_path, true);
         }
 
-        // --- الدالة المصححة لمعالجة تداخل الفيديوهات ---
         function play(path, mode) {
-            // 1. تفريغ المشغل القديم تماماً وتصفير المؤقتات
-            resetPlayer(); 
-            
+            resetPlayer(); // تنظيف أي مشغل قديم فوراً
             isCh = mode;
             document.getElementById('player-modal').style.display = 'flex';
             document.getElementById('hud').style.display = mode ? 'block' : 'none';
@@ -149,14 +167,12 @@
 
             const container = document.getElementById('video-container');
             
-            // 2. التحقق من نوع الرابط (يوتيوب أم وزارة)
             if (path.includes('youtube.com') || path.includes('youtu.be')) {
                 let id = path.split('v=')[1] || path.split('/').pop();
                 if(id && id.includes('&')) id = id.split('&')[0];
                 container.innerHTML = `<iframe id="yt-player" src="https://www.youtube.com/embed/${id}?autoplay=1&controls=${mode?0:1}&rel=0" frameborder="0" allow="autoplay; encrypted-media" style="width:100%; height:100%;"></iframe>`;
                 if(mode) runTick();
             } else {
-                // روابط الوزارة أو روابط مباشرة
                 const url = path.startsWith('http') ? path : `https://ict.moe.gov.om/tlawti/video/${path}`;
                 container.innerHTML = `<video id="main-v" src="${url}" controls="${!mode}" autoplay playsinline style="width:100%;height:100%;"></video>`;
                 if(mode) {
@@ -184,29 +200,16 @@
             } else { resetPlayer(true); }
         }
 
-        // --- دالة التنظيف الصارمة لمنع تداخل الصوت والذاكرة ---
         function resetPlayer(closeModal = false) {
             const container = document.getElementById('video-container');
-            
-            // إيقاف أي فيديو يوتيوب عن طريق مسح الرابط
             const iframe = document.getElementById('yt-player');
             if(iframe) iframe.src = "";
-
-            // إيقاف أي فيديو محلي
             const video = document.getElementById('main-v');
-            if(video) {
-                video.pause();
-                video.src = "";
-                video.load();
-            }
+            if(video) { video.pause(); video.src = ""; video.load(); }
 
-            // مسح الحاوية بالكامل وإيقاف المؤقتات
             container.innerHTML = ""; 
             clearInterval(timer);
-            
-            // تصفير الواجهة
             updateUI(0);
-
             if(closeModal) document.getElementById('player-modal').style.display = 'none';
         }
 
