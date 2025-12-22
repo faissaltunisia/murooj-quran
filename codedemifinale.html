@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُصحَف المُرُوج - الإصدار المطور</title>
+    <title>مُصحَف المُرُوج - الإصدار الملكي</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -18,51 +18,56 @@
         /* الشريط العلوي */
         .top-bar { 
             background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); 
-            padding: 8px 30px; display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 30px; display: flex; align-items: center; justify-content: space-between;
             border-bottom: 2px solid var(--accent); z-index: 1000;
         }
         .top-bar img { width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid var(--accent); background: #fff; }
-        .top-bar h1 { font-family: 'Amiri'; color: var(--accent); font-size: 1.4rem; }
+        .top-bar h1 { font-family: 'Amiri'; color: var(--accent); font-size: 1.5rem; }
 
         .app-body { display: flex; flex: 1; overflow: hidden; }
 
-        /* الشريط الجانبي */
-        .sidebar { width: 240px; background: var(--sidebar-bg); border-left: 1px solid var(--accent); display: flex; flex-direction: column; }
-        .grade-item { padding: 15px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; font-size: 0.95rem; }
+        /* الشريط الجانبي - تم حذف زر التعريف منه */
+        .sidebar { width: 250px; background: var(--sidebar-bg); border-left: 1px solid var(--accent); display: flex; flex-direction: column; }
+        .grade-item { padding: 18px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; font-size: 1rem; }
         .grade-item.active { background: var(--gold-gradient); color: var(--primary); font-weight: 900; }
+        .grade-item:hover:not(.active) { background: rgba(196,160,77,0.1); }
 
-        .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 25px; padding-bottom: 100px; }
+        .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 30px; padding-bottom: 120px; }
 
-        /* بطاقة التحدي - حجم أصغر */
+        /* بطاقة التحدي */
         .challenge-banner { 
-            background: #fff; border: 1.5px solid var(--accent); border-radius: 15px; 
-            padding: 15px 25px; margin-bottom: 25px; display: flex; align-items: center; 
+            background: #fff; border: 2px solid var(--accent); border-radius: 20px; 
+            padding: 20px 30px; margin-bottom: 30px; display: flex; align-items: center; 
             justify-content: space-between; max-width: 1000px; margin-left: auto; margin-right: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
-        .ch-txt p { font-size: 1.4rem; font-weight: 900; color: var(--primary); font-family: 'Amiri'; }
+        .ch-txt p { font-size: 1.6rem; font-weight: 900; color: var(--primary); font-family: 'Amiri'; }
 
         /* أزرار الفصول */
-        .sem-box { display: flex; gap: 15px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .sem-box { display: flex; gap: 20px; margin-bottom: 35px; max-width: 800px; margin-left: auto; margin-right: auto; }
         .sem-btn { 
-            flex: 1; padding: 12px; border-radius: 12px; border: 2px solid var(--accent);
+            flex: 1; padding: 15px; border-radius: 12px; border: 2px solid var(--accent);
             background: #fff; font-weight: 900; cursor: pointer; transition: 0.3s;
-            font-size: 1rem; box-shadow: 0 4px 0 var(--accent);
+            font-size: 1.1rem; box-shadow: 0 4px 0 var(--accent);
         }
-        .sem-btn.active { background: var(--gold-gradient); color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(196,160,77,0.3); }
+        .sem-btn.active { background: var(--gold-gradient); color: var(--primary); transform: translateY(-2px); }
 
-        /* شبكة السور - مقاسات مصغرة ومتناسقة */
+        /* شبكة السور (توزيع ثنائي للحاسوب) */
         .grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-            gap: 20px; max-width: 1100px; margin: 0 auto;
+            grid-template-columns: 1fr 1fr; 
+            gap: 40px; 
+            max-width: 1100px; 
+            margin: 0 auto;
         }
         .styled-card { 
-            background: #fff; border: 1px solid #e8e8e8; border-radius: 18px; padding: 25px 15px;
-            text-align: center; font-weight: 900; font-family: 'Amiri'; font-size: 1.4rem;
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.3s;
-            border-bottom: 4px solid var(--accent);
+            background: #fff; border: 1px solid #e0e0e0; border-radius: 20px; padding: 40px 20px;
+            text-align: center; font-weight: 900; font-family: 'Amiri'; font-size: 1.7rem;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: 0.4s;
+            border-bottom: 5px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
         }
-        .styled-card:hover { transform: translateY(-5px); border-color: var(--accent); background: #fffcf5; }
+        .styled-card:hover { transform: scale(1.03); border-color: var(--accent); box-shadow: 0 10px 25px rgba(196,160,77,0.2); background: #fffdf9; }
 
         /* الشريط السفلي */
         .bottom-nav { 
@@ -70,62 +75,58 @@
             display: flex; justify-content: space-around; padding: 10px 0;
             border-top: 2px solid var(--accent); z-index: 1000;
         }
-        .nav-btn { color: #fff; background: none; border: none; font-size: 0.75rem; cursor: pointer; text-align: center; flex: 1; }
-        .nav-btn.active { color: var(--accent); }
-        .nav-btn span { display: block; font-size: 1.4rem; margin-bottom: 2px; }
+        .nav-btn { color: #fff; background: none; border: none; font-size: 0.8rem; cursor: pointer; text-align: center; flex: 1; opacity: 0.8; }
+        .nav-btn.active { color: var(--accent); opacity: 1; font-weight: bold; }
+        .nav-btn span { display: block; font-size: 1.5rem; margin-bottom: 3px; }
 
-        /* المودالات والبطاقات التعريفية */
+        /* المودالات */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; backdrop-filter: blur(5px); }
-        
-        /* بطاقة "عن المنصة" المطورة */
         .about-card {
-            background: var(--primary); border: 2px solid var(--accent); border-radius: 20px;
-            width: 100%; max-width: 450px; padding: 30px; text-align: center; color: #fff;
-            background-image: linear-gradient(to bottom, rgba(5,38,24,0.8), var(--primary));
+            background: var(--primary); border: 3px solid var(--accent); border-radius: 25px;
+            width: 100%; max-width: 500px; padding: 40px; text-align: center; color: #fff;
+            box-shadow: 0 0 30px rgba(196,160,77,0.3);
         }
-        .about-card h2 { color: var(--accent); font-family: 'Amiri'; font-size: 1.8rem; margin-bottom: 15px; }
-        .about-card p { font-size: 0.95rem; line-height: 1.7; color: #ccc; margin-bottom: 20px; }
-        .about-divider { height: 1px; background: var(--gold-gradient); margin: 15px 0; opacity: 0.5; }
+        .about-card h2 { color: var(--accent); font-family: 'Amiri'; font-size: 2.2rem; margin-bottom: 10px; }
+        .about-divider { height: 2px; background: var(--gold-gradient); margin: 20px 0; }
 
         /* مشغل الفيديو */
-        .player-frame { width: 100%; max-width: 850px; aspect-ratio: 16/9; border: 3px solid var(--accent); border-radius: 15px; overflow: hidden; background: #000; }
+        .player-frame { width: 100%; max-width: 900px; aspect-ratio: 16/9; border: 3px solid var(--accent); border-radius: 20px; overflow: hidden; background: #000; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
-            .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-            .top-bar h1 { font-size: 1.1rem; }
-            .styled-card { font-size: 1.1rem; padding: 20px 10px; }
+            .grid { grid-template-columns: 1fr; gap: 20px; }
+            .top-bar h1 { font-size: 1.2rem; }
+            .styled-card { font-size: 1.3rem; padding: 25px 15px; }
         }
     </style>
 </head>
 <body>
 
     <nav class="top-bar">
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
             <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png">
             <h1>مُصحَف المُرُوج</h1>
         </div>
-        <div style="color:var(--accent); font-size:0.8rem; font-weight:bold;">عمان - 2025</div>
+        <div style="color:var(--accent); font-weight:bold;">٢٠٢٥ / ٢٠٢٦</div>
     </nav>
 
     <div class="app-body">
         <aside class="sidebar">
-            <div style="background:var(--gold-gradient); padding:15px; text-align:center; font-weight:900; color:var(--primary); cursor:pointer; font-size: 1rem;" onclick="openAbout()">۞ تعريف المنصة</div>
             <div class="sidebar-nav" id="grades-list-side"></div>
         </aside>
 
         <main class="content">
             <div class="challenge-banner">
                 <div class="ch-txt">
-                    <h4 style="color:#999; font-size:0.75rem;">سورة التحدي اليومي:</h4>
+                    <h4 style="color:#888; font-size:0.8rem;">سورة التحدي اليومي</h4>
                     <p id="ch-title">اختر الصف...</p>
                 </div>
-                <button class="sem-btn active" style="flex:none; padding:8px 25px; box-shadow:none; font-size:0.9rem;" onclick="startChallenge()">ابدأ التحدي ⚡</button>
+                <button class="sem-btn active" style="flex:none; padding:10px 30px; box-shadow:none;" onclick="startChallenge()">ابدأ التحدي ⚡</button>
             </div>
 
             <div class="sem-box">
-                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الأول</button>
-                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الثاني</button>
+                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الدراسي الأول</button>
+                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الدراسي الثاني</button>
             </div>
 
             <div id="surah-grid" class="grid"></div>
@@ -139,42 +140,38 @@
     </nav>
 
     <div class="modal" id="modal-grades">
-        <div class="about-card" style="max-width: 500px;">
-            <h2>اختر المرحلة الدراسية</h2>
-            <div id="grades-grid-modal" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-            <button class="sem-btn active" style="margin-top:20px; width:100%;" onclick="closeModal('modal-grades')">إغلاق</button>
+        <div class="about-card">
+            <h2>اختر الصف الدراسي</h2>
+            <div id="grades-grid-modal" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px;"></div>
+            <button class="sem-btn active" style="margin-top:25px; width:100%; border:none;" onclick="closeModal('modal-grades')">إغلاق</button>
         </div>
     </div>
 
     <div class="modal" id="modal-about">
         <div class="about-card">
-            <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" style="width:60px; margin-bottom:10px;">
+            <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" style="width:70px; margin-bottom:10px;">
             <h2>مُصحَف المُرُوج</h2>
             <div class="about-divider"></div>
-            <p>منصة تعليمية متخصصة تهدف إلى تسهيل تلاوة وحفظ القرآن الكريم لطلاب مدرسة المروج، باستخدام تقنيات تفاعلية تحفز على الإتقان.</p>
-            <div style="text-align:right; font-size:0.85rem;">
-                <p>• إشراف: <b>الأستاذ فيصل العريبي</b></p>
-                <p>• مدرسة المروج للتعليم الأساسي</p>
-                <p>• سلطنة عمان - ظفار</p>
-            </div>
+            <p style="line-height:1.8; margin-bottom:20px;">منصة تعليمية ذكية مخصصة لطلاب مدرسة المروج، تهدف لتعزيز مهارات تلاوة وحفظ القرآن الكريم عبر تحديات تفاعلية يومية.</p>
+            <p style="color:var(--accent); font-weight:bold;">إشراف الأستاذ: فيصل العريبي</p>
             <div class="about-divider"></div>
-            <button class="sem-btn active" style="width:100%; box-shadow:none;" onclick="closeModal('modal-about')">إغلاق النافذة</button>
+            <button class="sem-btn active" style="width:100%; box-shadow:none; border:none;" onclick="closeModal('modal-about')">إغلاق</button>
         </div>
     </div>
 
     <div class="modal" id="player-modal">
-        <div style="width:100%; max-width:850px; text-align:center;">
+        <div style="width:100%; max-width:900px; text-align:center;">
             <div class="player-frame">
                 <div id="shield" style="position:absolute; inset:0; z-index:100; display:none;"></div>
                 <div id="video-container" style="width:100%; height:100%;"></div>
             </div>
-            <div id="hud" style="margin-top:15px; color:#fff;">
-                <div id="pct" style="font-size:2.5rem; font-weight:900; color:var(--accent);">0%</div>
-                <div style="width:70%; height:8px; background:#222; border-radius:10px; margin:5px auto; overflow:hidden;">
+            <div id="hud" style="margin-top:20px;">
+                <div id="pct" style="font-size:3rem; font-weight:900; color:var(--accent);">0%</div>
+                <div style="width:80%; height:10px; background:#222; border-radius:10px; margin:10px auto; overflow:hidden;">
                     <div id="fill" style="height:100%; width:0%; background:var(--gold-gradient); transition:0.3s linear;"></div>
                 </div>
             </div>
-            <button class="sem-btn active" id="exit-btn" style="width:200px; margin-top:20px;" onclick="handleExit()">إغلاق</button>
+            <button class="sem-btn active" id="exit-btn" style="width:250px; margin-top:30px; border:none;" onclick="handleExit()">إغلاق وإنهاء</button>
         </div>
     </div>
 
@@ -195,7 +192,7 @@
 
         function renderUI() {
             document.getElementById('grades-list-side').innerHTML = gs.map(g => `<div class="grade-item ${g===grade?'active':''}" onclick="setGrade('${g}')">${g}</div>`).join('');
-            document.getElementById('grades-grid-modal').innerHTML = gs.map(g => `<div style="padding:10px; border:1px solid var(--accent); border-radius:8px; cursor:pointer; font-size:0.85rem;" onclick="setGrade('${g}'); closeModal('modal-grades');">${g}</div>`).join('');
+            document.getElementById('grades-grid-modal').innerHTML = gs.map(g => `<div style="padding:12px; border:1px solid var(--accent); border-radius:10px; cursor:pointer; font-weight:bold; font-size:0.9rem;" onclick="setGrade('${g}'); closeModal('modal-grades');">${g}</div>`).join('');
         }
 
         function setGrade(g) { grade = g; renderUI(); refresh(); }
@@ -238,18 +235,18 @@
             document.getElementById('fill').style.width = p + '%';
             if(isCh && p >= 75) {
                 const eb = document.getElementById('exit-btn');
-                eb.innerText = "تم الإنجاز 🏆"; eb.style.background = "#27ae60";
+                eb.innerText = "تم الإنجاز بنجاح 🏆"; eb.style.background = "#27ae60";
             }
         }
 
         function handleExit() {
             const p = parseInt(document.getElementById('pct').innerText);
-            if(isCh && p < 75) { if(!confirm("لم تنهِ التحدي، هل تريد الخروج؟")) return; }
+            if(isCh && p < 75) { if(!confirm("لم تنهِ التحدي، هل تود الخروج؟")) return; }
             document.getElementById('player-modal').style.display = 'none';
             document.getElementById('video-container').innerHTML = "";
             clearInterval(timer);
             const eb = document.getElementById('exit-btn');
-            eb.innerText = "إغلاق"; eb.style.background = "var(--gold-gradient)";
+            eb.innerText = "إغلاق وإنهاء"; eb.style.background = "var(--gold-gradient)";
         }
 
         function startChallenge() { if(currentS) play(currentS.video_path, true, currentS.title); }
