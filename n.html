@@ -203,11 +203,33 @@
         function resetPlayer(closeModal = false) {
             const container = document.getElementById('video-container');
             const iframe = document.getElementById('yt-player');
-            if(iframe) iframe.src = "";
             const video = document.getElementById('main-v');
-            if(video) { video.pause(); video.src = ""; video.load(); }
 
-            container.innerHTML = ""; 
+            // 1. Arrêter et nettoyer l'élément vidéo HTML5
+            if(video) { 
+                video.pause(); 
+                video.src = ""; 
+                video.load(); 
+                // Retirer l'élément du DOM
+                if (video.parentNode === container) {
+                    container.removeChild(video);
+                }
+            }
+            
+            // 2. Nettoyer l'iframe YouTube
+            if(iframe) {
+                iframe.src = "";
+                // Retirer l'élément du DOM
+                if (iframe.parentNode === container) {
+                    container.removeChild(iframe);
+                }
+            }
+
+            // 3. S'assurer que le conteneur est vide
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            
             clearInterval(timer);
             updateUI(0);
             if(closeModal) document.getElementById('player-modal').style.display = 'none';
