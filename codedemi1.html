@@ -51,13 +51,10 @@
 
         /* المودالات */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; backdrop-filter: blur(8px); }
-        .about-card { background: var(--primary); border: 2.5px solid var(--accent); border-radius: 25px; width: 100%; max-width: 450px; padding: 35px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+        .about-card { background: var(--primary); border: 2.5px solid var(--accent); border-radius: 25px; width: 100%; max-width: 450px; padding: 35px; text-align: center; color: #fff; position: relative; }
         
-        /* بطاقة الشكر والجائزة */
-        .prize-card { background: linear-gradient(to bottom, #052618, #041a11); border: 3px solid var(--accent); }
-        .prize-card h2 { font-family: 'Amiri'; color: var(--accent); font-size: 2.2rem; margin: 15px 0; }
-
-        .exit-btn-fixed { background: #e74c3c; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 900; cursor: pointer; margin-top: 15px; border-bottom: 4px solid #c0392b; }
+        /* أزرار المشغل */
+        .exit-btn-fixed { background: #e74c3c; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 900; cursor: pointer; margin-top: 15px; border-bottom: 4px solid #c0392b; display: block; width: 200px; margin-left: auto; margin-right: auto; }
 
         @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     </style>
@@ -75,7 +72,7 @@
             <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png">
             <h1>مُصحَف المُرُوج</h1>
         </div>
-        <div id="grade-label" style="color:var(--accent); font-weight:bold; border:1.5px solid var(--accent); padding:4px 15px; border-radius:20px; font-size:0.8rem;">الصف الخامس</div>
+        <div id="grade-label" style="color:var(--accent); font-weight:bold; border:1px solid var(--accent); padding:4px 15px; border-radius:20px; font-size:0.8rem;">الصف الخامس</div>
     </nav>
 
     <main class="content">
@@ -84,7 +81,7 @@
                 <span style="font-size:0.75rem; color:#888; font-weight:bold;">تحدي اليوم:</span>
                 <p id="ch-title">جاري التحميل...</p>
             </div>
-            <button class="nav-btn active" style="background:var(--gold-gradient); color:var(--primary); padding:10px 25px; border-radius:10px; font-weight:900; flex:none;" onclick="startChallenge()">ابدأ التحدي ⚡</button>
+            <button class="nav-btn active" style="background:var(--gold-gradient); color:var(--primary); padding:10px 25px; border-radius:10px; font-weight:900; flex:none;" onclick="confirmChallenge()">ابدأ التحدي ⚡</button>
         </div>
 
         <div class="sem-box">
@@ -105,6 +102,18 @@
         <button class="nav-btn" onclick="openAbout()"><span>ℹ️</span>عن المنصة</button>
     </nav>
 
+    <div class="modal" id="modal-confirm">
+        <div class="about-card" style="border-color: #f1c40f;">
+            <div style="font-size:3.5rem; margin-bottom:10px;">⚡</div>
+            <h2 style="color:var(--accent); font-family:'Amiri';">هل أنت مستعد للتحدي؟</h2>
+            <p style="margin:15px 0; line-height:1.6;">عند البدء، يجب عليك استكمال 75% من التلاوة على الأقل للحصول على وسام التميز لهذا اليوم.</p>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="sem-btn active" style="flex:2;" onclick="startChallenge()">نعم، لنبدأ!</button>
+                <button class="sem-btn" style="flex:1; background:#555; color:white; border:none;" onclick="closeModal('modal-confirm')">لاحقاً</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="modal-grades">
         <div class="about-card">
             <h2 style="color:var(--accent); margin-bottom:20px; font-family:'Amiri';">اختر الصف الدراسي</h2>
@@ -118,19 +127,18 @@
             <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" style="width:60px; margin-bottom:15px; border-radius:50%; border:2px solid var(--accent); background:#fff;">
             <h2 style="color:var(--accent); font-family:'Amiri';">مُصحَف المُرُوج</h2>
             <div style="height:2px; background:var(--gold-gradient); margin:15px 0; opacity:0.5;"></div>
-            <p style="font-size:0.9rem; line-height:1.7; color:#eee; margin-bottom:15px;">منصة تعليمية متكاملة مخصصة لطلاب مدرسة المروج، تهدف لتطوير مهارات تلاوة وحفظ القرآن الكريم بأسلوب تفاعلي حديث.</p>
+            <p style="font-size:0.9rem; line-height:1.7; color:#eee; margin-bottom:15px;">منصة تعليمية متكاملة مخصصة لطلاب مدرسة المروج بمحافظة ظفار.</p>
             <p style="color:var(--accent); font-weight:bold;">إشراف الأستاذ: فيصل العريبي</p>
-            <div style="height:2px; background:var(--gold-gradient); margin:15px 0; opacity:0.5;"></div>
-            <button class="nav-btn active" style="background:var(--gold-gradient); color:var(--primary); padding:10px 30px; border-radius:10px; font-weight:900;" onclick="closeModal('modal-about')">شكراً لك</button>
+            <button class="nav-btn active" style="background:var(--gold-gradient); color:var(--primary); padding:10px 30px; border-radius:10px; font-weight:900; margin-top:15px;" onclick="closeModal('modal-about')">إغلاق</button>
         </div>
     </div>
 
     <div class="modal" id="modal-prize">
-        <div class="about-card prize-card">
-            <div style="font-size:5rem;">🎁</div>
-            <h2>مبارك الإنجاز!</h2>
+        <div class="about-card" style="background: linear-gradient(to bottom, #052618, #041a11); border: 3px solid var(--accent);">
+            <div style="font-size:5rem;">🏆</div>
+            <h2 style="color:var(--accent); font-family:'Amiri';">مبارك الإنجاز!</h2>
             <p style="font-size:1.1rem; margin-bottom:10px;">لقد أتممت تحدي اليوم بنجاح باهر.</p>
-            <p style="color:var(--accent); font-weight:bold; font-size:1.2rem;">تستحق وسام "بطل المروج" لليوم 🏆</p>
+            <p style="color:var(--accent); font-weight:bold;">أنت الآن "بطل المروج" لليوم</p>
             <button class="nav-btn active" style="background:var(--gold-gradient); color:var(--primary); padding:12px 40px; border-radius:10px; font-weight:900; margin-top:20px;" onclick="closeModal('modal-prize')">استلام الوسام</button>
         </div>
     </div>
@@ -146,7 +154,7 @@
                     <div id="fill" style="height:100%; width:0%; background:var(--gold-gradient); transition:0.3s linear;"></div>
                 </div>
             </div>
-            <button class="exit-btn-fixed" onclick="handleExit()">إغلاق الفيديو</button>
+            <button class="exit-btn-fixed" id="close-player-btn" onclick="handleExit()">إغلاق الفيديو</button>
         </div>
     </div>
 
@@ -177,15 +185,30 @@
             }
         }
 
+        // تنبيه قبل البدء
+        function confirmChallenge() {
+            document.getElementById('modal-confirm').style.display = 'flex';
+        }
+
+        function startChallenge() {
+            closeModal('modal-confirm');
+            if(currentS) play(currentS.video_path, true);
+        }
+
         function play(path, mode) {
             isCh = mode;
             document.getElementById('player-modal').style.display = 'flex';
             document.getElementById('hud').style.display = mode ? 'block' : 'none';
             const container = document.getElementById('video-container');
+            
             if(path.includes('youtube.com')) {
                 let id = path.split('v=')[1];
                 container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&controls=${mode?0:1}" style="width:100%;height:100%;border:none;"></iframe>`;
-                if(mode) { let p=0; timer = setInterval(() => { if(p<100){ p++; updateUI(p); } }, 1000); }
+                if(mode) { 
+                    let p=0; 
+                    clearInterval(timer);
+                    timer = setInterval(() => { if(p<100){ p++; updateUI(p); } }, 1000); 
+                }
             } else {
                 container.innerHTML = `<video id="vv" src="${path}" autoplay style="width:100%;height:100%;"></video>`;
                 if(mode) { const v=document.getElementById('vv'); v.ontimeupdate = () => updateUI(Math.floor((v.currentTime/v.duration)*100)); }
@@ -202,11 +225,8 @@
         }
 
         function claimPrize() {
-            if(canClaim) {
-                document.getElementById('modal-prize').style.display = 'flex';
-            } else {
-                alert("عزيزي الطالب، أكمل تحدي اليوم أولاً لتستحق الجائزة! 🌟");
-            }
+            if(canClaim) document.getElementById('modal-prize').style.display = 'flex';
+            else alert("أكمل تحدي اليوم أولاً (75%) لتستحق الجائزة! 🌟");
         }
 
         function handleExit() {
@@ -215,7 +235,6 @@
             clearInterval(timer);
         }
 
-        function startChallenge() { if(currentS) play(currentS.video_path, true); }
         function openGrades() { document.getElementById('modal-grades').style.display = 'flex'; }
         function openAbout() { document.getElementById('modal-about').style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
