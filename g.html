@@ -12,104 +12,41 @@
     <style>
         :root { --p-green: #041a11; --gold: #c4a04d; --bg: #fdfaf1; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background-color: var(--p-green); 
-            font-family: 'Tajawal', sans-serif; 
-            overflow: hidden; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-        }
+        body { background-color: var(--p-green); font-family: 'Tajawal', sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
-        /* الهيدر العلوي */
-        .header { 
-            background: linear-gradient(180deg, #0b422a 0%, #062b1b 100%); 
-            border-bottom: 2px solid var(--gold); 
-            padding: 10px; 
-            flex-shrink: 0; 
-        }
+        .header { background: linear-gradient(180deg, #0b422a 0%, #062b1b 100%); border-bottom: 2px solid var(--gold); padding: 10px; flex-shrink: 0; }
         .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .logo-area { display: flex; align-items: center; gap: 8px; }
         .logo-area img { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--gold); background: #fff; }
         .app-name { color: var(--gold); font-family: 'Amiri', serif; font-size: 1.1rem; }
 
-        /* تبويبات الصفوف الدراسية - عرضية */
         .tabs { display: flex; overflow-x: auto; gap: 8px; padding: 5px 0; scrollbar-width: none; }
         .tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { 
-            padding: 8px 15px; 
-            background: rgba(255,255,255,0.1); 
-            color: #fff; 
-            border-radius: 20px; 
-            font-size: 11px; 
-            white-space: nowrap; 
-            border: 1px solid rgba(196,160,77,0.3); 
-            cursor: pointer; 
-        }
+        .tab-btn { padding: 8px 15px; background: rgba(255,255,255,0.1); color: #fff; border-radius: 20px; font-size: 11px; white-space: nowrap; border: 1px solid rgba(196,160,77,0.3); cursor: pointer; }
         .tab-btn.active { background: var(--gold); color: #000; font-weight: bold; }
 
-        /* منطقة المحتوى الرئيسي */
-        .main-content { 
-            flex: 1; 
-            background: var(--bg); 
-            border-top-left-radius: 25px; 
-            border-top-right-radius: 25px; 
-            overflow-y: auto; 
-            padding: 15px; 
-            padding-bottom: 80px; /* مساحة للبار السفلي */
-        }
-        
-        /* اختيار الفصل الدراسي */
+        .main-content { flex: 1; background: var(--bg); border-top-left-radius: 25px; border-top-right-radius: 25px; overflow-y: auto; padding: 15px; padding-bottom: 80px; }
         .sem-box { display: flex; background: #e0d9c8; border-radius: 10px; margin-bottom: 15px; padding: 3px; }
-        .sem-btn { 
-            flex: 1; padding: 10px; border: none; border-radius: 8px; 
-            font-weight: bold; font-family: 'Tajawal'; background: transparent; cursor: pointer; 
-        }
+        .sem-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-family: 'Tajawal'; background: transparent; cursor: pointer; }
         .sem-btn.active { background: var(--p-green); color: var(--gold); }
 
-        /* شبكة عرض السور */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { 
-            background: #fff; border-radius: 12px; padding: 15px 10px; 
-            text-align: center; border: 1px solid #e0d9c8; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; 
-        }
+        .card { background: #fff; border-radius: 12px; padding: 15px 10px; text-align: center; border: 1px solid #e0d9c8; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
         .card i { font-size: 22px; color: var(--p-green); margin-bottom: 5px; display: block; }
-        .card h3 { font-size: 11px; color: #333; line-height: 1.4; }
+        .card h3 { font-size: 11px; color: #333; }
 
-        /* البار السفلي للتنقل */
-        .nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: var(--p-green); height: 65px; 
-            display: flex; border-top: 2px solid var(--gold); z-index: 1000; 
-        }
-        .nav-link { 
-            flex: 1; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; 
-            color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; 
-        }
+        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--p-green); height: 65px; display: flex; border-top: 2px solid var(--gold); z-index: 1000; }
+        .nav-link { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; }
         .nav-link.active { color: var(--gold); }
         .nav-link i { font-size: 18px; margin-bottom: 2px; }
 
-        /* مشغل الفيديو المنبثق */
-        .video-overlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); 
-            z-index: 2000; display: none; flex-direction: column; 
-            align-items: center; justify-content: center; 
-        }
-        .video-player { width: 90%; max-width: 500px; position: relative; }
-        .close-video { 
-            position: absolute; top: -50px; left: 0; 
-            background: var(--gold); border: none; padding: 8px 20px; 
-            border-radius: 20px; font-weight: bold; cursor: pointer; 
-        }
+        /* مشغل الفيديو المطور للهواتف */
+        .video-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .video-player { width: 95%; max-width: 500px; position: relative; }
+        .close-video { position: absolute; top: -50px; left: 0; background: var(--gold); border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; z-index: 2100; }
+        #video-frame { width: 100%; background: #000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
-        #loading { 
-            position: fixed; inset: 0; background: var(--bg); 
-            z-index: 3000; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; font-weight: bold; 
-        }
+        #loading { position: fixed; inset: 0; background: var(--bg); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -149,7 +86,6 @@
 </div>
 
 <script>
-    // إعدادات Supabase
     const supaUrl = 'https://vchzkeebmjqiohgoknnm.supabase.co';
     const supaKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaHprZWVibWpxaW9oZ29rbm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzU3MjgsImV4cCI6MjA4MTcxMTcyOH0.bDIOdzhpj5M_5Hx7_SdnaBulImmFG41OKIOQGnx7FHI';
     const _client = supabase.createClient(supaUrl, supaKey);
@@ -181,7 +117,6 @@
     }
 
     function setGrade(g) { curGrade = g; renderTabs(); renderGrid(); }
-    
     function setSem(s) { 
         curSem = s; 
         document.getElementById('s1').className = 'sem-btn ' + (s===1?'active':'');
@@ -192,12 +127,10 @@
     function renderGrid() {
         const grid = document.getElementById('grid');
         const filtered = allData.filter(i => i.grade === curGrade && i.semester == curSem);
-        
         if (filtered.length === 0) {
-            grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">لا توجد بيانات حالياً</p>';
+            grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">لا توجد بيانات</p>';
             return;
         }
-
         grid.innerHTML = filtered.map(item => `
             <div class="card" onclick="play('${item.video_path}')">
                 <i class="fas fa-quran"></i>
@@ -206,17 +139,23 @@
         `).join('');
     }
 
-    // منطق تشغيل الفيديو المخصص للهواتف
+    // الدالة المصححة لتشغيل الفيديو على الهواتف
     function play(path) {
         const frame = document.getElementById('video-frame');
         let url = path.trim();
-        
+        frame.innerHTML = ''; // تنظيف الإطار
+
         if (url.includes('youtube.com') || url.includes('youtu.be')) {
             const id = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-            frame.innerHTML = `<iframe width="100%" height="250" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+            frame.innerHTML = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         } else {
             const final = url.startsWith('http') ? url : `https://ict.moe.gov.om/tlawti/video/${url}`;
-            frame.innerHTML = `<video src="${final}" controls autoplay playsinline style="width:100%; border-radius:10px;"></video>`;
+            frame.innerHTML = `
+                <video id="v-player" src="${final}" controls playsinline webkit-playsinline style="width:100%; display:block; border-radius:15px;"></video>
+            `;
+            // محاولة التشغيل التلقائي برمجياً
+            const v = document.getElementById('v-player');
+            v.play().catch(() => console.log("الرجاء الضغط على تشغيل"));
         }
         document.getElementById('player').style.display = 'flex';
     }
