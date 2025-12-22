@@ -3,66 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مُصحَف المُرُوج - لوحة الإنجاز</title>
+    <title>مُصحَف المُرُوج - الإصدار الاحترافي</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --primary: #041a11; --sidebar-bg: #052618; --accent: #c4a04d; 
             --gold-gradient: linear-gradient(135deg, #c4a04d 0%, #f1c40f 50%, #c4a04d 100%);
-            --bg-soft: #fdfaf1; 
+            --bg-soft: #fdfaf1; --card-shadow: 0 10px 20px rgba(0,0,0,0.08);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--primary); font-family: 'Tajawal', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        .header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--accent); z-index: 1000; }
-        .logo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
+        /* الهيدر */
+        .header { background: linear-gradient(135deg, #0b422a 0%, #041a11 100%); padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--accent); z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
 
         .app-body { display: flex; flex: 1; overflow: hidden; }
 
-        /* الشريط الجانبي */
-        .sidebar { width: 240px; background: var(--sidebar-bg); border-left: 2px solid var(--accent); display: flex; flex-direction: column; }
+        /* الشريط الجانبي (للحاسوب فقط) */
+        .sidebar { width: 280px; background: var(--sidebar-bg); border-left: 2px solid var(--accent); display: flex; flex-direction: column; transition: 0.3s; }
         .sidebar-nav { flex: 1; overflow-y: auto; scrollbar-width: none; }
-        .grade-item { padding: 18px 20px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; }
-        .grade-item.active { background: rgba(196,160,77,0.2); color: var(--accent); border-right: 4px solid var(--accent); }
+        .grade-item { padding: 22px 25px; color: #fff; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; font-size: 1.1rem; transition: 0.3s; }
+        .grade-item.active { background: rgba(196,160,77,0.2); color: var(--accent); border-right: 5px solid var(--accent); }
 
-        .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 20px; padding-bottom: 120px; }
+        /* المحتوى الرئيسي */
+        .content { flex: 1; overflow-y: auto; background: var(--bg-soft); padding: 40px; padding-bottom: 100px; scroll-behavior: smooth; }
         
-        /* قسم الأوسمة الجديد */
-        .badges-section { margin-bottom: 30px; display: none; } /* يظهر فقط عند وجود أوسمة */
-        .badges-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
-        .badge-icon { 
-            min-width: 80px; height: 100px; background: #fff; border: 2px solid var(--accent); 
-            border-radius: 12px; display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; font-size: 0.7rem; font-weight: 900; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            animation: badge-pop 0.5s ease-out;
+        /* بطاقة التحدي - تصميم فخم */
+        .challenge-banner { 
+            background: #fff; border: 3px solid var(--accent); border-radius: 25px; 
+            padding: 30px; margin: 0 auto 40px; display: flex; align-items: center; 
+            justify-content: space-between; max-width: 900px; box-shadow: var(--card-shadow);
+            background-image: radial-gradient(circle at top left, #fffcf0 0%, #fff 100%);
         }
-        @keyframes badge-pop { from { transform: scale(0); rotate: -20deg; } to { transform: scale(1); rotate: 0deg; } }
+        .challenge-info h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 5px; opacity: 0.8; }
+        .challenge-info p { font-size: 1.8rem; font-weight: 900; color: var(--primary); font-family: 'Amiri'; }
 
-        /* تنسيق البطاقات والأزرار */
-        .challenge-banner { background: #fff; border: 2px solid var(--accent); border-radius: 15px; padding: 12px 20px; margin: 0 auto 25px; display: flex; align-items: center; justify-content: space-between; max-width: 650px; }
-        .sem-box { display: flex; gap: 12px; justify-content: center; margin-bottom: 25px; }
-        .sem-btn, .styled-card { background: #fff; border: 2px solid var(--accent); border-radius: 15px; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .sem-btn { padding: 12px 25px; }
-        .sem-btn.active { background: var(--gold-gradient); color: var(--primary); }
-        .styled-card { padding: 25px 10px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 90px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        /* قسم الأوسمة */
+        .badges-section { max-width: 900px; margin: 0 auto 30px; }
+        .badges-container { display: flex; gap: 15px; overflow-x: auto; padding: 15px 5px; scrollbar-width: none; }
+        .badge-icon { 
+            min-width: 100px; height: 130px; background: #fff; border: 2px solid var(--accent); 
+            border-radius: 18px; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; font-size: 0.8rem; font-weight: 900; box-shadow: var(--card-shadow);
+            transition: 0.3s;
+        }
+
+        /* أزرار الفصول - ضخمة */
+        .sem-box { display: flex; gap: 25px; justify-content: center; margin-bottom: 45px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .sem-btn { 
+            flex: 1; padding: 25px; font-size: 1.3rem; border-radius: 20px; border: 3px solid var(--accent);
+            background: #fff; font-weight: 900; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 6px 0 var(--accent);
+        }
+        .sem-btn.active { background: var(--gold-gradient); color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(196,160,77,0.4); border-color: #fff; }
+
+        /* شبكة السور - بطاقات أكبر */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
+        .styled-card { 
+            background: #fff; border: 2px solid #eee; border-radius: 20px; padding: 40px 20px;
+            font-weight: 900; font-size: 1.4rem; color: var(--primary); cursor: pointer;
+            transition: 0.3s; text-align: center; box-shadow: var(--card-shadow);
+            font-family: 'Amiri'; border-bottom: 5px solid var(--accent);
+        }
+        .styled-card:hover { transform: scale(1.05); border-color: var(--accent); background: #fffcf5; }
+
+        /* الشريط السفلي للهاتف */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--sidebar-bg); display: none; justify-content: space-around; padding: 12px; border-top: 2px solid var(--accent); z-index: 1000; }
+        .nav-item { color: #fff; font-size: 0.7rem; text-align: center; cursor: pointer; opacity: 0.7; }
+        .nav-item.active { color: var(--accent); opacity: 1; }
+        .nav-item i { font-size: 1.5rem; display: block; margin-bottom: 4px; }
 
         /* المشغل */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; padding: 15px; }
-        .player-frame { width: 95vw; max-width: 850px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; }
-        .hud-monitor { width: 95vw; max-width: 850px; margin-top: 20px; text-align: center; color: #fff; }
-        .pct-val { font-size: 3rem; font-weight: 900; color: var(--accent); }
-        .progress-line { height: 10px; background: #222; border-radius: 10px; margin-top: 10px; border: 1px solid #444; overflow: hidden; }
-        .fill { height: 100%; width: 0%; background: var(--gold-gradient); transition: 0.3s linear; }
-        .btn-exit { margin-top: 25px; background: transparent; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 45px; border-radius: 50px; font-weight: 900; cursor: pointer; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
+        .player-frame { width: 100%; max-width: 1000px; aspect-ratio: 16/9; background: #000; border: 3px solid var(--accent); border-radius: 20px; overflow: hidden; }
 
+        /* استعلامات الوسائط للهواتف */
         @media (max-width: 768px) {
-            .app-body { flex-direction: column; }
-            .sidebar { width: 100%; border-bottom: 2px solid var(--accent); }
-            .sidebar-nav { flex-direction: row; overflow-x: auto; }
-            .btn-start-mobile { padding: 5px 10px !important; font-size: 0.7rem !important; border-radius: 8px !important; }
-            .grid { grid-template-columns: repeat(2, 1fr); }
+            .sidebar { display: none; }
+            .header { padding: 12px 20px; }
+            .content { padding: 20px; padding-bottom: 120px; }
+            .bottom-nav { display: flex; }
+            .challenge-banner { padding: 15px; border-radius: 15px; }
+            .challenge-info p { font-size: 1.1rem; }
+            .sem-box { flex-direction: row; gap: 10px; }
+            .sem-btn { padding: 15px 10px; font-size: 0.9rem; border-radius: 12px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .styled-card { padding: 25px 10px; font-size: 1.1rem; border-radius: 15px; }
+            .btn-start-mobile { padding: 8px 15px !important; font-size: 0.8rem !important; }
         }
     </style>
 </head>
@@ -70,42 +99,54 @@
 
     <header class="header">
         <img src="https://raw.githubusercontent.com/faissaltunisia/student-grades/main/Screenshot%202025-12-16%20235912.png" class="logo">
-        <h1 style="font-family:'Amiri'; color:var(--accent); font-size:1.4rem;">مُصحَف المُرُوج</h1>
-        <div style="width:40px"></div>
+        <div style="text-align: center;">
+            <h1 style="font-family:'Amiri'; color:var(--accent); font-size:1.8rem; letter-spacing: 1px;">مُصحَف المُرُوج</h1>
+            <p style="color: #fff; font-size: 0.7rem; opacity: 0.6;">مدرسة المروج للتعليم الأساسي</p>
+        </div>
+        <div style="width:55px"></div>
     </header>
 
     <div class="app-body">
         <aside class="sidebar">
-            <div style="background:var(--gold-gradient); padding:15px; text-align:center; cursor:pointer; font-weight:900;" onclick="document.getElementById('modal-about').style.display='flex'">۞ تعريف المنصة</div>
+            <div style="background:var(--gold-gradient); padding:20px; text-align:center; cursor:pointer; font-weight:900; color:var(--primary); font-size: 1.1rem;" onclick="document.getElementById('modal-about').style.display='flex'">۞ تعريف المنصة</div>
             <div class="sidebar-nav" id="grades-list"></div>
         </aside>
 
         <main class="content">
-            <div class="badges-section" id="badges-section">
-                <p style="font-weight: 900; color: var(--primary); margin-bottom: 10px;">🏅 أوسمة الإتقان الخاصة بك:</p>
+            <div class="badges-section" id="badges-section" style="display:none;">
+                <h2 style="font-size: 1.2rem; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">🏅 لوحة أوسمة الإتقان</h2>
                 <div class="badges-container" id="badges-container"></div>
             </div>
 
             <div class="challenge-banner">
-                <div style="flex:1"><span style="font-size:0.7rem; color:#888;">تحدي اليوم:</span><p id="ch-title" style="font-weight:900; font-size: 0.85rem;">...</p></div>
-                <button class="sem-btn active btn-start-mobile" onclick="document.getElementById('modal-confirm').style.display='flex'">ابدأ التحدي</button>
+                <div class="challenge-info">
+                    <h3>تحدي التلاوة اليومي</h3>
+                    <p id="ch-title">جاري تحميل السورة...</p>
+                </div>
+                <button class="sem-btn active btn-start-mobile" style="flex:none; padding: 12px 35px;" onclick="document.getElementById('modal-confirm').style.display='flex'">ابدأ التحدي ⚡</button>
             </div>
 
             <div class="sem-box">
-                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الأول</button>
-                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الثاني</button>
+                <button class="sem-btn active" id="s1" onclick="switchSem(1)">الفصل الدراسي الأول</button>
+                <button class="sem-btn" id="s2" onclick="switchSem(2)">الفصل الدراسي الثاني</button>
             </div>
 
             <div id="surah-grid" class="grid"></div>
         </main>
     </div>
 
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="location.reload()"><span>🏠</span><br>الرئيسية</div>
+        <div class="nav-item" onclick="document.getElementById('modal-about').style.display='flex'"><span>ℹ️</span><br>عن المنصة</div>
+        <div class="nav-item" onclick="alert('اختر الصف من القائمة الجانبية في الأعلى')"><span>📚</span><br>الصفوف</div>
+    </nav>
+
     <div class="modal" id="modal-success">
-        <div style="background:#fff; padding:40px; border-radius:25px; text-align:center; max-width:350px;">
-            <div style="font-size: 50px;">🌟</div>
-            <h2 style="color:var(--primary);">إنجاز رائع!</h2>
-            <p style="margin:15px 0; color:#666;">تمت إضافة وسام <b id="success-surah"></b> إلى لوحة إنجازاتك.</p>
-            <button class="sem-btn active" onclick="confirmAchievement()" style="width:100%;">قبول الوسام</button>
+        <div style="background:#fff; padding:45px; border-radius:30px; text-align:center; max-width:400px; border:4px solid var(--accent);">
+            <div style="font-size: 60px; margin-bottom: 20px;">🏆</div>
+            <h2 style="color:var(--primary); font-family:'Amiri'; font-size: 2rem;">مبارك الإنجاز!</h2>
+            <p style="margin:20px 0; color:#555; font-size: 1.1rem;">لقد حصلت على وسام الإتقان لسورة:<br><b id="success-surah" style="color:var(--accent); font-size: 1.4rem;"></b></p>
+            <button class="sem-btn active" onclick="confirmAchievement()" style="width:100%; box-shadow: none;">إضافة الوسام للوحة الشرف</button>
         </div>
     </div>
 
@@ -118,7 +159,7 @@
             <div class="pct-val" id="pct-txt">0%</div>
             <div class="progress-line"><div class="fill" id="bar-fill"></div></div>
         </div>
-        <button class="btn-exit" id="exit-btn" onclick="handleExit()">إغلاق</button>
+        <button class="btn-exit" id="exit-btn" onclick="handleExit()">إغلاق وإنهاء</button>
     </div>
 
     <script>
@@ -131,9 +172,7 @@
         async function init() {
             const { data } = await _sb.from('surahs').select('*');
             surahs = data || [];
-            renderSidebar(); 
-            refresh();
-            loadBadges(); // تحميل الأوسمة المحفوظة
+            renderSidebar(); refresh(); loadBadges();
         }
 
         function renderSidebar() {
@@ -158,41 +197,28 @@
             }
         }
 
-        // --- نظام الأوسمة ---
         function loadBadges() {
-            const savedBadges = JSON.parse(localStorage.getItem('murooj_badges') || "[]");
+            const saved = JSON.parse(localStorage.getItem('murooj_badges') || "[]");
             const container = document.getElementById('badges-container');
             const section = document.getElementById('badges-section');
-            
-            if(savedBadges.length > 0) {
+            if(saved.length > 0) {
                 section.style.display = 'block';
-                container.innerHTML = savedBadges.map(b => `
-                    <div class="badge-icon">
-                        <span style="font-size:2rem;">🏅</span>
-                        <span>${b}</span>
-                    </div>
-                `).join('');
+                container.innerHTML = saved.map(b => `<div class="badge-icon"><span style="font-size:2.5rem;">🏅</span><span>${b}</span></div>`).join('');
             }
-        }
-
-        function saveBadge(title) {
-            let savedBadges = JSON.parse(localStorage.getItem('murooj_badges') || "[]");
-            if(!savedBadges.includes(title)) {
-                savedBadges.push(title);
-                localStorage.setItem('murooj_badges', JSON.stringify(savedBadges));
-            }
-            loadBadges();
         }
 
         function confirmAchievement() {
-            saveBadge(currentTitle);
+            let saved = JSON.parse(localStorage.getItem('murooj_badges') || "[]");
+            if(!saved.includes(currentTitle)) {
+                saved.push(currentTitle);
+                localStorage.setItem('murooj_badges', JSON.stringify(saved));
+            }
+            loadBadges();
             document.getElementById('modal-success').style.display = 'none';
         }
 
-        // --- إدارة المشغل ---
         function play(path, mode, title) {
-            resetPlayer();
-            isCh = mode; currentTitle = title;
+            resetPlayer(); isCh = mode; currentTitle = title;
             document.getElementById('player-modal').style.display = 'flex';
             document.getElementById('hud').style.display = mode ? 'block' : 'none';
             document.getElementById('player-shield').style.display = mode ? 'block' : 'none';
@@ -221,18 +247,16 @@
             document.getElementById('pct-txt').innerText = p + '%';
             document.getElementById('bar-fill').style.width = p + '%';
             if(isCh && p >= 75) {
-                document.getElementById('exit-btn').innerText = "🏆 استلم الوسام";
-                document.getElementById('exit-btn').style.color = "#27ae60";
-                document.getElementById('exit-btn').style.borderColor = "#27ae60";
+                const btn = document.getElementById('exit-btn');
+                btn.innerText = "🏆 استلم الوسام"; btn.style.color = "#27ae60"; btn.style.borderColor = "#27ae60";
             }
         }
 
         function handleExit() {
             const p = parseInt(document.getElementById('pct-txt').innerText);
             if(isCh && p >= 75) {
-                resetPlayer();
-                document.getElementById('player-modal').style.display = 'none';
-                document.getElementById('success-surah').innerText = "سورة " + currentTitle;
+                resetPlayer(); document.getElementById('player-modal').style.display = 'none';
+                document.getElementById('success-surah').innerText = currentTitle;
                 document.getElementById('modal-success').style.display = 'flex';
             } else if (isCh) {
                 if(confirm("لم تنهِ التلاوة (75%). هل تود الخروج؟")) resetPlayer(true);
@@ -243,13 +267,6 @@
             const container = document.getElementById('video-container');
             container.innerHTML = ""; clearInterval(timer);
             if(closeModal) document.getElementById('player-modal').style.display = 'none';
-        }
-
-        function startChallenge() {
-            document.getElementById('modal-confirm').style.display='none';
-            const list = surahs.filter(s => s.grade === grade && s.semester == sem);
-            const daily = list[new Date().getDate() % list.length];
-            if(daily) play(daily.video_path, true, daily.title);
         }
 
         init();
